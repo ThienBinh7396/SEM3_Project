@@ -1,0 +1,951 @@
+﻿@using RechargeWeb.Models;
+@using System.Text.RegularExpressions;
+@using RechargeWeb.Controllers;
+@model Tuple<RechargeWeb.Models.ContainerData>
+@{
+    /**/
+
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+    var container = Model.Item1;
+
+}
+@section OutSide{
+    <style>
+        #description_detail {
+            position: fixed;
+            top: 100px;
+            left: 200px;
+            z-index: 100;
+        }
+
+        .ds,
+        #bootstrap-data-service tr .descript,
+        #bootstrap-data-service tr .descript .contentt {
+            width: 50px !important;
+            word-break: break-all;
+        }
+    </style>
+    <div id="description_detail" class="animated " style="display: none; animation-duration: 0.4s">
+        <div class="card" style="box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">
+            <div class="card-header">
+                <i class="fa fa-info"></i><strong class="card-title pl-2" style="display: inline-block !important; margin-bottom: 0">Description Details</strong>
+            </div>
+            <div class="card-body">
+                <div class="mx-auto d-block" style="width: 300px; max-height: 240px; overflow: auto">
+
+                </div>
+                <hr>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-primary hidden" id="btn-service" data-toggle="modal" data-target="#serviceModal">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade animated slideInDown" style="animation-duration: 0.34s;" id="serviceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel1" style="color: #001fff;font-size: 17px;font-weight: bold;">Add service</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="close_service">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-body card-block">
+                                <form action="#" method="post" class="">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon" style="width: 42px"><i class="fa fa-tumblr"></i></div>
+                                            <input type="text" id="name" name="name" placeholder="Name" class="form-control required">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon" style="width: 42px"><i class="fa fa-dollar"></i></div>
+                                            <input type="text" id="price" name="price" placeholder="Price" class="form-control required">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon" style="width: 42px"><i class="fa fa-list-alt"></i></div>
+                                            <select name="type" id="type" class="form-control form-control">
+                                                @foreach (var typeS in container.type_Services)
+                                                {
+                                                    <option value="@typeS.id" id="modal_@typeS.id">@typeS.title</option>
+                                                }
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon" style="width: 42px; height: 38px;"><i class="fa fa-file-text-o"></i></div>
+                                            <textarea id="description" name="description" placeholder="Description" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-addon" style="width: 42px"><i class="fa fa-ils"></i></div>
+                                            <select name="type" id="mobile" class="form-control form-control">
+                                                @foreach (var typeM in container.mobile_Networks)
+                                                {
+                                                    <option value="@typeM.id" id="mobile_@typeM.id" img="@typeM.thumbnail">@typeM.name</option>
+                                                }
+                                            </select>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="input-group date " id="start_date">
+                                            <div class="input-group-addon" style="width: 42px"><i class="fa fa-calendar" style="color: #4b00ff"></i></div>
+                                            <input type="date" name="start_date" class="form-control tb-date ">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="input-group date " id="end_date">
+                                            <div class="input-group-addon" style="width: 42px"><i class="fa fa-calendar" style="color: brown"></i></div>
+                                            <input type="date" name="end_date" class="form-control tb-date ">
+                                        </div>
+                                    </div>
+                                    <div class="form-actions form-group text-right">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success btn-sm" id="submit-form">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section Main{
+    <style>
+        .price {
+            color: #ff0000;
+            font-weight: bold;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 50px;
+        }
+
+        table tbody tr:hover {
+            background-color: #47b6c747 !important;
+        }
+
+
+        .center-align {
+            vertical-align: middle;
+        }
+
+        .note-editor.note-frame {
+            width: calc(100% - 42px);
+        }
+
+        .note-statusbar {
+            display: none
+        }
+
+        input.tb-date {
+            position: relative;
+            padding-left: 60px;
+        }
+
+            input.tb-date:before {
+                position: absolute;
+                content: "Start: ";
+                top: 50%;
+                left: 8px;
+                color: green;
+                font-size: 15px;
+                font-weight: bold;
+                transform: translateY(-50%);
+            }
+
+        #end_date input:before {
+            content: "End: "
+        }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .descript {
+            position: relative;
+            user-select: none;
+            padding-top: 14px;
+        }
+
+            .descript .control {
+                position: absolute;
+                top: 2px;
+                right: 7px;
+                font-size: 14px;
+                font-weight: bold;
+                color: #7c12da;
+                width: 10px;
+                height: 10px;
+            }
+
+                .descript .control i {
+                    position: absolute;
+                    top: 3px;
+                    left: 50%;
+                }
+
+                    .descript .control i.bot {
+                        top: -2px;
+                    }
+
+            .descript .show {
+                color: #9c4ce2;
+                font-size: 11px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+                .descript .show:hover {
+                    color: #5601a0;
+                }
+
+        .tb-item {
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            position: relative;
+            -webkit-border-radius: 100%;
+            -moz-border-radius: 100%;
+            border-radius: 100%;
+            background: #e5e5e5;
+            margin-right: 5px;
+            margin: 0;
+        }
+
+        #bootstrap-data-service tr td {
+            vertical-align: middle;
+        }
+    </style>
+
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Service</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="@Url.Action("Index", "Admin")">Dashboard</a></li>
+                                <li><a href="#">Table</a></li>
+                                <li class="active">Service</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="content">
+        <div class="animated fadeInUp">
+            <div class="row">
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Type Service Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-type-service" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 56px">No.</th>
+                                        <th>Title</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    var index = 0;
+                                }
+                                <tbody>
+                                    @foreach (var item in container.type_Services)
+                                    {
+                                        <tr tid="@item.id" id="t_@item.id" style="cursor: pointer" onclick="clickTypeService(this)">
+                                            <td valign="@(index++)">@index</td>
+                                            <td class="t-title">@item.title</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">Form</div>
+                        <div class="card-body card-block">
+                            <form action="#" method="post" class="">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-text-width"></i></div>
+                                        <input type="text" id="title-type" name="title" placeholder="Title" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-actions form-group" style="text-align: right">
+                                    <button type="submit" class="btn clear-event-default btn-danger btn-sm" id="t-delete" style="display: none">Delete</button>
+                                    <button type="submit" class="btn clear-event-default btn-success btn-sm" id="t-control"><i class="fa fa-plus" style="font-size: 10px"></i> <span>Add</span></button>
+                                    <button type="submit" class="btn clear-event-default btn-primary btn-sm" id="t-reset">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+    <div class="content" style="padding-top: 0">
+        <div class="animated fadeInLeft">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card " style="width: fit-content;">
+                        <button type="button" class="btn btn-success" onclick="clickService()"><i class="fa fa-plus-circle"></i>&nbsp; Add service</button>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Service Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-service" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 36px">No.</th>
+                                        <th style="width: 36px;">Name</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th class="ds">Description</th>
+                                        <th>Network</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    var sindex = 0;
+                                }
+                                <tbody>
+                                    @foreach (var item in container.services)
+                                    {
+                                        <tr tid="@item.id" id="tb_service_@(sindex++)" style="cursor: pointer" content="@HomeController.ToJson(item)">
+                                            <td style=" padding: 6px; vertical-align: middle">
+                                                <div class="cover" style="width: 66px;">
+
+                                                    <button class="tb-item" onclick="clickTr(this)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Send">
+                                                        <i class="fa fa-pencil-square" style="color: brown"></i>
+                                                    </button>
+                                                    <button class="tb-item" data-toggle="tooltip" onclick="deleteTr(this)" data-placement="top" title="" data-original-title="Send">
+                                                        <i class="fa fa-trash-o" style="color: red"></i>
+                                                    </button>
+                                                </div>
+
+                                            </td>
+                                            <td style=" white-space: nowrap; font-weight: bold">
+                                                <div class="c">
+                                                    @item.name
+
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-pill badge-success" style="padding: 5px 10px; font-size: 9px;">@item.type_service.title</span>
+
+                                            </td>
+                                            <td class="price">
+                                                <script>document.write(Number("@item.price").toFixed(2))</script>$
+                                            </td>
+                                            <td class="descript" value="@item.description" style="font-size: 14px; font-weight: 600">
+
+                                                <span class="contentt" style="padding: 0">
+                                                    @Html.Raw(item.description)
+                                                </span>
+                                                <span class="show">Show More</span>
+                                            </td>
+                                            <td>
+                                                <img src="~/Assets/Upload/@item.mobile_network.thumbnail" class="thumbnail" alt="Alternate Text" />
+
+                                            </td>
+                                            <td class="center-align">
+                                                <span class="tb-time badge badge-info badge-normal start_date_text">
+                                                    <script>
+                                                        document.write(formatTextTime("@item.start_date"))
+                                                    </script>
+
+                                                </span>
+                                            </td>
+                                            <td class="center-align">
+                                                <span class="tb-time badge badge-warning badge-normal end_date_text">
+                                                    <script>
+                                                        document.write(formatTextTime("@item.end_date"))
+                                                    </script>
+                                                </span>
+                                            </td>
+                                            <script>
+                                                window.total = @sindex;
+                                            </script>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th style="width: 56px">No.</th>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Price</th>
+                                        <th>Description</th>
+                                        <th>Network</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+}
+@section Scripts{
+
+    <script>
+        window.currentType = 0;
+        window.currentService = 0;
+        window.myservice = {};
+
+        window.resetService = function () {
+            $("#name").val("");
+            $("#description").summernote("code", "");
+            $("#start_date input").val("");
+            $("#end_date input").val("");
+            $("#price").val("");
+            currentService = 0;
+
+            myservice  = {};
+        }
+
+        function clickService() {
+            $("#price").prop("disabled", false);
+
+            $("#submit-form").text("Submit");
+            $("#exampleModalLabel1").text("Add service");
+            resetService();
+            $("#btn-service").click();
+        }
+
+        function clickTypeService(that) {
+            var id = Number(that.getAttribute("tid"));
+            console.log(id);
+
+            currentType = id;
+            $("#title-type").val($("#t_" + id + " .t-title").text());
+            if (Number(id) != 1) {
+                $("#t-delete").fadeIn();
+            } else {
+                $("#t-delete").fadeOut();
+            }
+
+            $("#t-control span").text("Save");
+
+        }
+
+        $(".descript .contentt").each(function (e) {
+            var t = $(this).text().trim();
+            t = t.replace(/\s+/, " ");
+            console.log(t);
+            if (t.length < 36) {
+                $(this).next().remove();
+                return;
+            }
+            t = t.length > 36 ? t.substr(0, 36) + "..." : t;
+            $(this).text(`${t}`);
+        })
+        function full(num) {
+            return Number(num) > 9 ? num : "0" + num;
+        }
+
+        function getTypeDate(value) {
+            if (value == "" || value == null) {
+                return "";
+            }
+            console.log(value);
+            if (`${value}`.trim() == "") {
+                return "";
+            }
+                var date = new Date(Number(value));
+                var year = date.getFullYear();
+                var month = date.getMonth() + 1;
+                var day = date.getDate();
+
+                return `${year}-${full(month)}-${full(day)}`;
+        }
+
+        function clickTr(that) {
+            event.preventDefault();
+
+            that = that.parentElement.parentElement.parentElement;
+            $("#submit-form").text("Save")
+
+            currentService = Number(that.getAttribute("tid"));
+            var dt = JSON.parse(that.getAttribute("content"));
+
+            $("#exampleModalLabel1").text("Edit service " + dt.name);
+
+            myservice = dt;
+
+            $("#name").val(dt.name);
+            $("#price").val(dt.price.toFixed(2));
+            $("#price").prop("disabled", true);
+            $("#type").val(dt.type_id);
+            $("#description").summernote("code", dt.description);
+            $("#mobile").val(dt.id_mobile_network);
+
+
+
+            $("#start_date input").val(getTypeDate(dt.start_date));
+            $("#end_date input").val(getTypeDate(dt.end_date));
+
+            $("#btn-service").click();
+
+        }
+
+        var service = $("#bootstrap-data-service").DataTable({
+            "columnDefs": [{
+                targets: 2,
+                orderable: false
+            }, {
+                targets: 4,
+                orderable: false
+            }, {
+                targets: 5,
+                orderable: false
+            }]
+        });
+
+        function deleteTr(that) {
+            var target = that.parentElement.parentElement.parentElement;
+            var index = target.getAttribute("tid");
+            console.log(index);
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You want to delete " + $(`#bootstrap-data-service  tr[tid='${index}'] td:nth-child(2)`).text().trim(),
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.value) {
+
+                    $.ajax({
+                        url: "@Url.Action("DeleteService", "Admin")",
+                        type: "POST",
+                        data: {
+                            id: index
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            if (data == "1") {
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    'success'
+                                )
+
+                                service.row($(`#bootstrap-data-service  tr[tid='${index}']`)).remove().draw();
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: "You can't delete this because you has record belong to this!",
+                                })
+                            }
+                        }
+                    })
+
+                }
+            })
+        }
+
+        window.showText = function (e, target) {
+            var text = target.text();
+            $(".descript .show").text("Show More");
+            if (text == "Show More") {
+                $("#description_detail .mx-auto").html(target.parent().attr("value"));
+
+                target.text("Show Less");
+
+                $("#description_detail").css({
+                    top: e.clientY - 40,
+                    left: e.clientX + 80
+                }).slideDown();
+
+            } else {
+                target.text("Show More");
+                $("#description_detail").slideUp();
+            }
+        }
+
+        $(document).ready(function (e) {
+            //for (var i = 0; i < Number(`${total}`); i++) {
+            //    if (i > 9) {
+            //        $(`#tb_service_${i} .tb-time`).each(function (e){
+            //            formatTime($(this));
+            //        })
+            //        console.log(`#tb_service_${i} .tb-time`);
+            //    }
+            //}
+            $(" .descript .show").click(function (e) {
+                e.stopPropagation();
+                showText(e, $(this));
+            });
+
+            $("#description").summernote({
+                placeholder: "Description",
+                tabsize: 2,
+                height: 100,
+                toolbar: false,
+                callbacks: {
+                    onKeyup: function () {
+                        var des = $("#description").summernote("code");
+                        if (des.trim() == "" || des == "<p><br></p>") {
+                            check = true;
+                            $(".note-editor").addClass("is-invalid");
+                        } else {
+                            $(".note-editor").removeClass("is-invalid");
+
+                        }
+                    }
+                }
+            });
+            function reset() {
+                $("#title-type").val("");
+                $("#t-delete").fadeOut();
+                $("#t-control span").text("Add");
+                currentType = 0;
+            }
+
+            $("#tb-nav li").removeClass("active");
+            $("#tb-nav li#service").addClass("active");
+
+            $("#t-reset").click(function (e) {
+                reset();
+
+            })
+
+            var type = $("#bootstrap-data-type-service").DataTable();
+
+
+            $("#t-delete").click(function (e) {
+                if (currentType == 0) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!',
+                    })
+                    return;
+                }
+                $.ajax({
+                    url: "@Url.Action("ControlTypeService", "Admin")",
+                    type: "POST",
+                    data: {
+                        type: "delete",
+                        id: currentType,
+                        title: ""
+                    },
+                    success: function (data) {
+                        if (data == "1") {
+                            type.row($("#t_" + currentType)).remove().draw();
+
+                            $("#modal_" + currentType).remove();
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: `You can't remove ${$("#title-type").val()} because you has record belong to this!`,
+                            })
+                        }
+
+                        $("#t-reset").click();
+                    }
+                })
+            })
+            $("#title-type").keyup(function (e) {
+                if ($(this).val().trim() == "") {
+                    $("#title-type").addClass("is-invalid");
+                } else {
+                    $("#title-type").removeClass("is-invalid");
+                }
+            })
+            $("#t-control").click(function (e) {
+
+                var c = $(this).find("span").text();
+
+                if (currentType == 0 && c == "Save") return;
+                if ($("#title-type").val().trim() == "") {
+                    $("#title-type").addClass("is-invalid");
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Title is required field!',
+                    })
+                    return;
+                }
+                if (c == "Add") {
+                    $.ajax({
+                        url: "@Url.Action("ControlTypeService","Admin")",
+                        type: "POST",
+                        data: {
+                            type: "add",
+                            id: currentType,
+                            title: $("#title-type").val()
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            if (data == "1") {
+                                location.reload();
+                            }
+                        }
+                    })
+                }
+
+                if (c == "Save") {
+                    $.ajax({
+                        url: "@Url.Action("ControlTypeService", "Admin")",
+                        type: "POST",
+                        data: {
+                            type: "edit",
+                            id: currentType,
+                            title: $("#title-type").val()
+                        },
+                        success: function (data) {
+
+                            if (data == "1") {
+                                $("#t_" + currentType + " .t-title").text($("#title-type").val());
+                                $("#modal_" + currentType).text($("#title-type").val());
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Something went wrong!',
+                                })
+                            }
+                            reset();
+                        }
+                    })
+                }
+            })
+
+            $(".required").change(function (e) {
+                if ($(this).val().trim() == "") {
+                    $(this).addClass("is-invalid");
+                } else {
+                    $(this).removeClass("is-invalid");
+
+                }
+
+            })
+
+            $(".required").blur(function (e) {
+                if ($(this).val().trim() == "") {
+                    $(this).addClass("is-invalid");
+                } else {
+                    $(this).removeClass("is-invalid");
+
+                }
+            })
+            $(".tb-date").focus(function (e) {
+                $(this).removeClass("is-invalid");
+            })
+            $("#submit-form").click(function (e) {
+                e.preventDefault();
+                var check = false;
+                var des = $("#description").summernote("code");
+                if (des.trim() == "" || des == "<p><br></p>") {
+                    check = true;
+                    $(".note-editor").addClass("is-invalid");
+                }
+
+                $(".required").each(function (e) {
+                    if ($(this).val().trim() == "") {
+                        $(this).addClass("is-invalid");
+                        check = true;
+                    } else {
+                        $(this).removeClass("is-invalid");
+
+                    }
+                })
+
+
+
+                if (check) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Type required field!',
+                    })
+                    return;
+                }
+                if ($(this).text() == "Save" && currentService == 0) return;
+                    var name = $("#name").val();
+                    var type = $("#type").val();
+                    var mobile = $("#mobile").val();
+                    var start = $("#start_date input").val() != "" ? new Date($("#start_date input").val()).getTime() : " ";
+                var end = $("#end_date input").val() != "" ? new Date($("#end_date input").val()).getTime() : " ";
+                var price = $("#price").val();
+
+                if (start >= end && start != " " && end != " ") {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Start date must be less than end date',
+                    })
+                    $("#end_date input").addClass("is-invalid");
+                    return;
+                }
+                    if ($(this).text() == "Submit") {
+                    $.ajax({
+                        url: "@Url.Action("ControlService", "Admin")",
+                        type: "POST",
+                        data: {
+                            type: "add",
+                            id: 1,
+                            name: name,
+                            type_service: type,
+                            mobile: mobile,
+                            start: start,
+                            end: end,
+                            description: des,
+                            price: price
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            if (data == "1") {
+                                location.reload();
+
+
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Something went wrong!',
+                                })
+                            }
+                        }
+                    })
+                }
+                if ($(this).text() == "Save") {
+                    $.ajax({
+                        url: "@Url.Action("ControlService", "Admin")",
+                        type: "POST",
+                        data: {
+                            type: "edit",
+                            id: currentService,
+                            name: name,
+                            type_service: type,
+                            mobile: mobile,
+                            start: start,
+                            end: end,
+                            description: des,
+                            price: price
+                        },
+                        success: function (data) {
+
+                            if (data == "1") {
+                                myservice.name = name;
+                                myservice.type_id = type;
+                                myservice.id_mobile_network = mobile;
+                                myservice.description = des;
+                                myservice.price = price;
+                                myservice.start_date = `${start}`.trim() == "" ? null : start;
+                                myservice.end_date = `${end}`.trim() == "" ? null : end;
+
+
+                                $(`#bootstrap-data-service  tr[tid='${currentService}']`).attr("content", JSON.stringify(myservice));
+
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(2)`).text(name);
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(3) .badge`).text($(`#modal_${myservice.type_id}`).text());
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(6) img`).attr("src", "/Assets/Upload/" + $(`#mobile_${myservice.id_mobile_network}`).attr("img"));
+
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] .descript`).attr("value", myservice.description);
+
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] .descript .contentt`).html(myservice.description);
+                                var txt = $(`#bootstrap-data-service  tr[tid='${currentService}'] .descript .contentt`).text();
+                                var time =  Date.now();
+
+                                txt = txt.replace(/\s+/gi, " ");
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] .descript .show`).remove();
+                                if (txt.length > 36) {
+                                    $(`#bootstrap-data-service  tr[tid='${currentService}'] .descript`).append(
+                                        `<span class="show" id="show_${time}">Show More</span>`
+                                    )
+                                    txt = txt.substr(0, 36) + "...";
+                                } else {
+
+                                }
+
+                                $("#show_" + time).click(function (e) {
+                                    e.stopPropagation();
+                                    showText(e, $(this));
+                                })
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] .descript .contentt`).text(txt);
+
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(7) .start_date_text`).text(myservice.start_date);
+                                formatTime($(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(7) .start_date_text`));
+                                $(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(8) .end_date_text`).text(myservice.end_date);
+                                formatTime($(`#bootstrap-data-service  tr[tid='${currentService}'] td:nth-child(8) .end_date_text`));
+
+
+                                $("#btn-service").click();
+
+                                Swal.fire({
+                                    type: 'success',
+                                    title: 'Congratulations',
+                                    text: 'Change data successful!',
+                                })
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Something went wrong!',
+                                })
+                            }
+                        }
+                    })
+                }
+            });
+
+
+        })
+    </script>
+
+}
+

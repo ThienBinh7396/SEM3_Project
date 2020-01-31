@@ -1,0 +1,87 @@
+﻿@{
+    Layout = "~/Views/_ViewAdminLoginStart.cshtml";
+}
+@section Header{
+    <div class="sufee-login d-flex align-content-center flex-wrap">
+        <div class="container">
+            <div class="login-content">
+                <div class="login-logo">
+                    <a href="index.html">
+                        <img class="align-content" src="~/Content/demo/assets/img/logo.png" style="width: 320px; margin-bottom: 36px" alt="">
+                    </a>
+                </div>
+                <div class="login-form">
+                    <form action="@Url.Action("Login", "Admin")" method="post">
+                        <div class="form-group">
+                            <label style="width: 100%">Email or account <span style="font-weight: bold; font-size: 10px; text-align: right; color: #cd5c5c; float: right">Account admin: admin, pass: 123456</span></label>
+                            <input type="text" name="email" class="form-control" value="@Model.email" placeholder="Email or account">
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" name="password" autocomplete="off" class="form-control" value="@Model.password" placeholder="Password">
+                        </div>
+                        <div class="checkbox">
+
+                            <label class="pull-right">
+                                <a href="@Url.Action("ForgetPassword", "Admin")">Forgotten Password?</a>
+                            </label>
+
+                        </div>
+                        <button type="submit" class="btn btn-success btn-flat m-b-30 m-t-30">
+                            Sign in
+                            <img src="~/Assets/Image/dual_ring.gif" style="width: 30px;margin-left: 9px;opacity: 0; transition: 0.4s" />
+                        </button>
+
+                        <div class="register-link m-t-15 text-center">
+                            <p>Don't have account ? <a href="@Url.Action("Register", "Admin")"> Sign Up Here</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts{
+    <script>
+        $(document).ready(function (e) {
+            $("button[type='submit']").click(function (e) {
+                e.preventDefault();
+                var seft = $(this);
+                seft.find("img").css("opacity", 1);
+
+                console.log($("input[type='password']").val());
+                $.ajax({
+                    url: "@Url.Action("Login", "Admin")",
+                    type: "POST",
+                    data: {
+                        email: $("[name='email']").val(),
+                        password: $("input[type='password']").val()
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "true") {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Your email or password is incorrect!',
+                            })
+                        }
+                        seft.find("img").css("opacity", 0);
+                    }
+                })
+            });
+            setTimeout(function (e) {
+
+                $("input[type='password']").each(function (e) {
+                    if ($(this).val() != "") {
+                        $(this).val($("input[type='password']").attr("value"));
+
+                    }
+            })
+            }, 1000)
+        })
+    </script>
+}
+

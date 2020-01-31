@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="aspnet-RechargeWeb-20190424021345" Class="ServerDatasDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=aspnet-RechargeWeb-20190424021345;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="aspnet_RechargeWeb_20190424021345ConnectionString" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.customer" Member="customers">
+    <Type Name="customer">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="phone_number" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="create_at" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="update_at" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="id_network" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="balance" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Association Name="customer_history" Member="histories" ThisKey="id" OtherKey="id_customer" Type="history" />
+      <Association Name="mobile_network_customer" Member="mobile_network" ThisKey="id_network" OtherKey="id" Type="mobile_network" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.mobile_network" Member="mobile_networks">
+    <Type Name="mobile_network">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="thumbnail" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="[_identity]" Member="_identity" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="country" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="mobile_network_customer" Member="customers" ThisKey="id" OtherKey="id_network" Type="customer" />
+      <Association Name="mobile_network_service" Member="services" ThisKey="id" OtherKey="id_mobile_network" Type="service" />
+    </Type>
+  </Table>
+  <Table Name="dbo.payment" Member="payments">
+    <Type Name="payment">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="type" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="provider" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Association Name="payment_history" Member="histories" ThisKey="id" OtherKey="payment_method" Type="history" />
+    </Type>
+  </Table>
+  <Table Name="dbo.role" Member="roles">
+    <Type Name="role">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="type" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="role_employee" Member="employees" ThisKey="id" OtherKey="role" Type="employee" />
+    </Type>
+  </Table>
+  <Table Name="dbo.type_service" Member="type_services">
+    <Type Name="type_service">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="title" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Association Name="type_service_service" Member="services" ThisKey="id" OtherKey="type_id" Type="service" />
+    </Type>
+  </Table>
+  <Table Name="dbo.history_detail" Member="history_details">
+    <Type Name="history_detail">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="id_history" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_service" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="qty" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Association Name="history_history_detail" Member="history" ThisKey="id_history" OtherKey="id" Type="history" IsForeignKey="true" />
+      <Association Name="service_history_detail" Member="service" ThisKey="id_service" OtherKey="id" Type="service" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.employee" Member="employees">
+    <Type Name="employee">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="phone_number" Type="System.String" DbType="VarChar(11) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="create_at" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="update_at" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="role" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="background" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="color" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="employee_history" Member="histories" ThisKey="id" OtherKey="id_employee_update" Type="history" />
+      <Association Name="role_employee" Member="role1" ThisKey="role" OtherKey="id" Type="role" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.history" Member="histories">
+    <Type Name="history">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="total" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="id_customer" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="status" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="payment_method" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="update_at" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="create_at" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="id_employee_update" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="trade_code" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="history_history_detail" Member="history_details" ThisKey="id" OtherKey="id_history" Type="history_detail" />
+      <Association Name="customer_history" Member="customer" ThisKey="id_customer" OtherKey="id" Type="customer" IsForeignKey="true" />
+      <Association Name="payment_history" Member="payment" ThisKey="payment_method" OtherKey="id" Type="payment" IsForeignKey="true" />
+      <Association Name="employee_history" Member="employee" ThisKey="id_employee_update" OtherKey="id" Type="employee" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.service" Member="services">
+    <Type Name="service">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="name" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="type_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="price" Type="System.Double" DbType="Float NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="Text" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="id_mobile_network" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="start_date" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Column Name="end_date" Type="System.String" DbType="VarChar(255)" CanBeNull="true" />
+      <Association Name="service_history_detail" Member="history_details" ThisKey="id" OtherKey="id_service" Type="history_detail" />
+      <Association Name="type_service_service" Member="type_service" ThisKey="type_id" OtherKey="id" Type="type_service" IsForeignKey="true" />
+      <Association Name="mobile_network_service" Member="mobile_network" ThisKey="id_mobile_network" OtherKey="id" Type="mobile_network" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.feedback" Member="feedbacks">
+    <Type Name="feedback">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="type" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="id_from" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="id_to" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="create_at" Type="System.String" DbType="VarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="content" Type="System.String" DbType="Text NOT NULL" CanBeNull="false" UpdateCheck="Never" />
+    </Type>
+  </Table>
+</Database>

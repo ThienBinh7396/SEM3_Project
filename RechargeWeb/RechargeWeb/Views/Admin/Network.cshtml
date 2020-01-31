@@ -1,0 +1,350 @@
+﻿@using RechargeWeb.Models;
+@{
+    /**/
+
+    ViewBag.Title = "Network";
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+}
+
+@section Main{
+    <style>
+        .thumbnail {
+            width: 100px;
+            margin: auto;
+        }
+
+        .card input::placeholder {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        #bootstrap-data-type-network_wrapper tr td {
+            vertical-align: middle;
+        }
+
+        .tb-item {
+            display: inline-block;
+            height: 30px;
+            margin: auto;
+            width: 30px;
+            position: relative;
+            -webkit-border-radius: 100%;
+            -moz-border-radius: 100%;
+            border-radius: 100%;
+            background: #e5e5e5;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Network</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="@Url.Action("Index", "Admin")">Dashboard</a></li>
+                                <li><a href="#">Table</a></li>
+                                <li class="active">Network table</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="content">
+        <div class="animated slideInUp">
+            <div class="row">
+
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Network Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="note" style="font-size: 10px; font-weight: bold;text-align: right; margin-bottom: 16px;">
+                                <span style="color: red">Note:</span> Identity is carrier get from api http://apilayer.net/api/validate. <a href="http://apilayer.net/api/validate?access_key=48ea5d2fdb9cd68235148beed47c6002&format=1&country_code=VN&number=0926040781" style="color: #582eff; text-decoration: underline">Example</a>
+                            </div>
+                            <table id="bootstrap-data-type-network" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 56px">No.</th>
+                                        <th>Name</th>
+                                        <th>Thumbnail</th>
+                                        <th>Identity</th>
+                                        <th>Country</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    var index = 0;
+                                }
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr tid="@item.id" id="t_@item.id" style="cursor: pointer">
+                                            <td valign="@(index++)" style="text-align: center">
+                                                <button class="tb-item" onclick="clickMobile(this)" data-toggle="tooltip" data-placement="top" title="" data-original-title="Send">
+                                                    <i class="fa fa-pencil-square" style="color: brown"></i>
+                                                </button>
+
+                                            </td>
+                                            <td class="t-name">@item.name</td>
+                                            <td class="t-thumbnail">
+                                                <img src="~/Assets/Upload/@item.thumbnail" class="thumbnail" alt="Alternate Text" />
+                                            </td>
+                                            <td class="t-identity">@item._identity</td>
+                                            <td class="t-country">@item.country</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">Form</div>
+                        <div class="card-body card-block">
+                            <form action="#" method="post" class="">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-text-width"></i></div>
+                                        <input type="text" id="network-name" name="name" placeholder="Name" class="form-control required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><img src="~/Assets/Image/fingerprint-solid.svg" style="width: 14px;" alt="Alternate Text" /></div>
+                                        <input type="text" id="network-identity" name="identity" placeholder="Example: Vietnamobile JSC" class="form-control required">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon" style="height: 38px"><i class="fa fa-file-image-o"></i></div>
+                                        <div class="form-control" style="height: fit-content; cursor: pointer">
+                                            <input type="file" name="thumbnail" id="thumbnail" style="height: 100%; opacity: 0; width: 100%; position: absolute; cursor: pointer" />
+                                            <img src="~/Assets/Upload/image-placeholder-png.png" alt="Alternate Text" style="width: 100%; cursor: pointer" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-flag"></i></div>
+                                        <input type="text" id="country" name="identity" placeholder="Country" class="form-control required">
+                                    </div>
+                                </div>
+
+                                <div class="form-actions form-group" style="text-align: right">
+                                    <button type="submit" class="btn clear-event-default btn-danger btn-sm animated fadeIn" id="t-delete" style="display: none">Delete</button>
+                                    <button type="submit" class="btn clear-event-default btn-success btn-sm" id="t-control"><i class="fa fa-plus" style="font-size: 10px"></i> <span>Add</span></button>
+                                    <button type="submit" class="btn clear-event-default btn-primary btn-sm" id="t-reset">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+}
+@section Scripts{
+    <script>
+        window.checkFile = false;
+        window.currentId = 0;
+        function clickMobile(that) {
+            var index = that.parentElement.parentElement.getAttribute("tid");
+
+            checkFile = true;
+            console.log(index);
+            $("#t-delete").show();
+
+            $("#t-control span").text("Save");
+            var target = $(`#t_${index}`);
+
+            $("#network-name").val(target.find(".t-name").text());
+            $("#network-identity").val(target.find(".t-identity").text());
+            $("#country").val(target.find(".t-country").text());
+            $("#thumbnail").next().attr("src", target.find(".t-thumbnail img").attr("src"))
+            currentId = index;
+
+        }
+
+        $(document).ready(function (e) {
+            $("#tb-nav li").removeClass("active");
+            $("#tb-nav li#network").addClass("active");
+
+            var mobile = $("#bootstrap-data-type-network").DataTable();
+
+            var myfile;
+            function resetNetwork() {
+                $("#thumbnail").next().attr("src", "/Assets/Upload/image-placeholder-png.png");
+                $("#network-name").val("");
+                $("#network-identity").val("");
+                $("#country").val("");
+
+                $("#t-delete").fadeOut();
+                $("#t-control span").text("Add");
+
+                checkFile = false;
+                currentId = 0;
+                myfile = null;
+            }
+            var regex = /(image\/png)|(image\/jpeg)|(image\/svg+xml)/gi
+
+            $("#thumbnail").change(function (e) {
+                myfile = e.target.files[0];
+                if (!regex.test(myfile.type)) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Type image error!',
+                    })
+                    checkFile = false;
+                    return;
+                }
+                checkFile = true;
+                $(this).parent().removeClass("is-invalid");
+
+                var url = URL.createObjectURL(myfile);
+
+                $(this).next().attr("src", url);
+            })
+            $(".required").keyup(function (e) {
+                if ($(this).val().trim() == "") {
+                    $(this).addClass("is-invalid");
+                } else {
+                    $(this).removeClass("is-invalid");
+                }
+            })
+            $("#t-delete").click(function (e) {
+                $.ajax({
+                    url: "@Url.Action("DeleteNetwork", "Admin")",
+                    type: "POST",
+                    data: {
+                        id: currentId
+                    },
+                    success: function (data) {
+                        if (data == "1") {
+                            mobile.row($("#t_" + currentId)).remove().draw();
+
+                            resetNetwork();
+                        } else {
+                            Swal({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: `You can't delete ${$("#network-name").val()} because you has record belong to this`,
+                            })
+                        }
+                    }
+                })
+            })
+
+            $("#t-control").click(function (e) {
+                var text = $(this).find("span").text();
+                console.log(text);
+                var c = false;
+                $(".required").each(function (e) {
+                    if ($(this).val().trim() == "") {
+                        c = true;
+                        $(this).addClass("is-invalid");
+                    }
+                });
+                if (!checkFile) {
+                    $("#thumbnail").parent().addClass("is-invalid");
+                }
+                if (c || !checkFile) {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Type required field!',
+                    })
+                    return;
+                }
+                var name = $("#network-name").val();
+                var identity = $("#network-identity").val();
+                var country = $("#country").val();
+                var formData = new FormData();
+                formData.append("name", name);
+                formData.append("identity", identity);
+                formData.append("country", country);
+                formData.append("thumbnail", myfile);
+
+                if (text == "Add") {
+                    formData.append("type", "add");
+
+                    $.ajax({
+                        url: "@Url.Action("ControlNetWork", "Admin")",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            console.log(data);
+                            if (data == "1") {
+                                location.reload();
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Something went wrong!',
+                                })
+                            }
+                        }
+                    })
+                }
+                if (text == "Save") {
+                    formData.append("type", "edit");
+                    formData.append("id", currentId);
+                    $.ajax({
+                        url: "@Url.Action("ControlNetWork", "Admin")",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            console.log(data);
+                            if (data == "1") {
+                                var tg = $(`#t_${currentId}`);
+                                tg.find(".t-name").text($("#network-name").val());
+                                tg.find(".t-identity").text($("#network-identity").val());
+                                tg.find(".t-country").text($("#country").val());
+                                tg.find(".t-thumbnail img").attr("src", $("#thumbnail").next().attr("src"));
+
+                                Swal.fire({
+                                    type: 'success',
+                                    title: 'Congratutation...',
+                                    text: `${$("#network-name").val()} has changed`,
+                                })
+                                resetNetwork();
+
+                            } else {
+                                Swal.fire({
+                                    type: 'error',
+                                    title: 'Oops...',
+                                    text: 'Something went wrong!',
+                                })
+                            }
+                        }
+                    })
+                }
+            })
+            $("#t-reset").click(function (e) {
+                resetNetwork();
+            })
+        })
+    </script>
+}

@@ -1,0 +1,1356 @@
+﻿@using RechargeWeb.Models;
+
+@{
+    /**/
+
+    /**/
+
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+
+    var user = Session["user"] as customer;
+    var cart = Session["cart"] as List<Cart>;
+
+    if (cart == null)
+    {
+        cart = new List<Cart>();
+    }
+}
+@section Header{
+    <style>
+        tb-fast {
+            animation-duration: 0.5s;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: rgba(235,235, 235,0.3);
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #b9b3b39e;
+            border-radius: 4px;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        .support-bar-right .tb-cart {
+            position: relative;
+            width: 36px !important;
+            height: 36px !important;
+            background: none !important;
+            border: 3px solid #3880f4 !important;
+        }
+
+        #amount_cart {
+            position: absolute;
+            top: -11px;
+            right: -2px;
+            font-size: 18px;
+        }
+
+        .ml-10 {
+            margin-left: 10px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        @@keyframes btt_bounce {
+            from {
+                top: calc(50% + 2px);
+            }
+
+            to {
+                top: calc(50% - 2px);
+            }
+        }
+
+        .my-balance-cover {
+            display: inline-block;
+            color: #4a4a4a;
+            background: #fdd835;
+            height: 27px;
+            border-radius: 2px;
+            text-align: center;
+            line-height: 27px;
+            font-size: 15px;
+            padding: 0 6px;
+            font-weight: 700;
+            margin-right: 13px;
+        }
+
+        #show-cart {
+            width: 340px;
+            background: #fff;
+            padding: 30px 24px;
+            position: absolute;
+            right: -1px;
+            top: 34px;
+            display: none;
+            border-radius: 4px;
+            border-top-right-radius: 0;
+            -webkit-transform: translateX(0);
+            -ms-transform: translateX(0);
+            transform: translateX(0);
+            box-shadow: 0,1px,5px,#fff;
+            box-shadow: 0 1px 5px 0 rgba(0,0,0,.4);
+            z-index: 100;
+            color: #41445c !important;
+        }
+
+        .scale_50 {
+            animation: scale ease-in-out 0.2s;
+        }
+
+        @@keyframes scale {
+            0% {
+                transform: scale(0.6);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .tb-back-to-top {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background-color: #3880f4;
+            color: #fff;
+            font-size: 20px;
+            border: 2px solid #3880f4;
+            -webkit-transition: all 0.5s ease-in;
+            -moz-transition: all 0.5s ease-in;
+            -o-transition: all 0.5s ease-in;
+            transition: all 0.5s ease-in;
+            border-radius: 50%;
+            cursor: pointer;
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            z-index: 9999;
+            display: none;
+        }
+
+            .tb-back-to-top:hover {
+                background-color: transparent;
+                color: #3880f4;
+                border: 2px solid #3880f4;
+            }
+
+            .tb-back-to-top i {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                font-size: 24px;
+                animation: btt_bounce 0.6s infinite;
+                animation-timing-function: ease-in-out;
+            }
+    </style>
+
+    <!-- Start login -->
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary hidden" id="tb-btn-login" data-toggle="modal" data-target="#modalLogin">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade tb_my_modal" id="modalLogin" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 100%;margin-top: 25px;">
+            <div class="modal-content" style="overflow-x: hidden">
+                <div class="modal-body">
+                    <img src="/Content/demo/assets/img/logo.png" alt="logo image" style="margin: auto;display: block;margin-bottom: 26px;margin-top: 12px;">
+
+                    <ul style="width: 100%">
+                        <li class="active">Sign in</li>
+                        <li>Sign up</li>
+                    </ul>
+                    <div class="content">
+                        <div class="content-item animated">
+                            <input type="text" placeholder="Enter your phone number" id="login_phone" />
+                            <input type="password" placeholder="Enter your password" id="login_password" />
+
+                            <div class="row" style="padding: 0 37px;">
+                                <div class="col-lg-5">
+                                    <input type="submit" class="form-control btn_modal_login_close" value="Close" style=" margin: auto;margin-top: 50px;height: 40px;line-height: 40px;padding: 0px; background: #6c757d">
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="submit" class="form-control" value="Sign in" id="btn_modal_login" style=" margin: auto;margin-top: 50px; height: 40px;line-height: 40px;padding: 0px">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-item animated" style="display: none;">
+                            <input type="text" placeholder="Enter your name" id="register_name" class="ip_required" />
+                            <div class="cover_input">
+                                <input type="email" placeholder="Enter email" id="register_email" class="ip_required" />
+                                <img src="~/Assets/Image/info.png" class="image_icon" />
+                            </div>
+                            <input type="text" placeholder="Enter your phone" id="register_phone" class="ip_required" />
+                            <input type="password" placeholder="Enter your password" id="register_password" class="ip_required" />
+
+                            <div class="row" style="padding: 0 37px;">
+                                <div class="col-lg-5">
+                                    <input type="submit" class="form-control btn_modal_login_close" value="Close" style=" margin: auto;margin-top: 50px;height: 40px;line-height: 40px;padding: 0px; background: #6c757d">
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="submit" value="Register" id="btn_modal_register" style="width: 70%;margin: auto;margin-top: 50px; width: 80%;height: 40px;line-height: 40px;padding: 0px; background: #12753a">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start login -->
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary hidden" id="tb-btn-edit" data-toggle="modal" data-target="#modalEdit">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade tb_my_modal" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 100%;margin-top: 25px;">
+            <div class="modal-header" style="display: none">
+                <h4 class="modal-title">Modal Heading</h4>
+                <button type="button" id="close_modal_edit" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-content" style="overflow-x: hidden">
+                <div class="modal-body">
+                    <img src="/Content/demo/assets/img/logo.png" alt="logo image" style="margin: auto;display: block;margin-bottom: 26px;margin-top: 12px;">
+
+                    <ul style="width: 100%">
+                        <li class="active" style="width: 100%">Edit</li>
+                    </ul>
+                    <div class="content">
+
+                        <div class="content-item animated">
+                            <input type="text" placeholder="Enter your name" id="edit_name" class="ip_required" />
+                            <div class="cover_input">
+                                <input type="email" disabled placeholder="Enter email" id="edit_email" class="ip_required" />
+                            </div>
+                            <input type="text" disabled placeholder="Enter your phone" id="edit_phone" class="ip_required" />
+                            <input type="password" placeholder="Enter your password" id="edit_password" class="ip_required" />
+
+                            <div class="row" style="padding: 0 37px;">
+                                <div class="col-lg-5">
+                                    <input type="submit" class="form-control" value="Close" id="target_close_modal_edit" style=" margin: auto;margin-top: 50px;height: 40px;line-height: 40px;padding: 0px; background: #6c757d">
+                                </div>
+                                <div class="col-lg-7">
+                                    <input type="submit" value="Submit" id="btn_modal_edit" style="width: 70%;margin: auto;margin-top: 50px; width: 80%;height: 40px;line-height: 40px;padding: 0px; background: #12753a">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .tb_my_modal {
+            max-width: 480px;
+            margin: auto;
+        }
+
+            .tb_my_modal .content {
+                width: 100%;
+                box-shadow: 0 0 0 1px #e5e5e5;
+                border-bottom-right-radius: 2px;
+                border-bottom-left-radius: 2px;
+                padding: 15px;
+                transition: 0.3s;
+            }
+
+                .tb_my_modal .content .content-item {
+                    animation-duration: 0.5s;
+                }
+
+                    .tb_my_modal .content .content-item input {
+                        margin-top: 26px;
+                    }
+
+                    .tb_my_modal .content .content-item .cover_input {
+                        width: auto;
+                        height: auto;
+                        position: relative;
+                    }
+
+                        .tb_my_modal .content .content-item .cover_input > input {
+                            padding-right: 50px;
+                        }
+
+                        .tb_my_modal .content .content-item .cover_input .image_icon {
+                            width: 24px;
+                            height: 24px;
+                            position: absolute;
+                            top: 50%;
+                            right: 16px;
+                            transform: translateY(-50%);
+                        }
+
+                    .tb_my_modal .content .content-item > input:first-child {
+                        margin-top: 15px;
+                    }
+
+                    .tb_my_modal .content .content-item input[type='submit'] {
+                        cursor: pointer;
+                    }
+
+                    .tb_my_modal .content .content-item input.ip_required.empty {
+                        box-shadow: 0 0 0 0.2rem rgba(212, 44, 44, 0.25);
+                        border: 1px solid rgb(212, 44, 44);
+                    }
+
+            .tb_my_modal ul {
+                width: 100%;
+                box-shadow: 0 0 0 1px #e5e5e5;
+                border-top-right-radius: 4px;
+                border-top-left-radius: 4px;
+                border-bottom: 1px solid #e5e5e5;
+                display: flex;
+                user-select: none;
+                cursor: pointer;
+            }
+
+                .tb_my_modal ul > li {
+                    width: 50%;
+                    position: relative;
+                    display: inline-block;
+                    text-decoration: none;
+                    color: #000;
+                    background-color: #fafafa;
+                    border-left: 0;
+                    border-top-left-radius: 4px;
+                    border-bottom: 2px solid #c4c4c4;
+                    padding: 10px;
+                    padding-bottom: 11px;
+                    font-size: 14px;
+                    line-height: 28px;
+                    transition: 0.4s;
+                    transition-timing-function: ease-in-out;
+                    text-align: center;
+                }
+
+                    .tb_my_modal ul > li.active {
+                        background-color: #fafafa;
+                        font-weight: 600;
+                    }
+
+                    .tb_my_modal ul > li:after {
+                        content: "";
+                        position: absolute;
+                        bottom: 0;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 0;
+                        height: 2px;
+                        background: #6666c4;
+                        transition: 0.3s;
+                    }
+
+                    .tb_my_modal ul > li.active:after {
+                        width: 100%;
+                    }
+
+                    .tb_my_modal ul > li:hover:after {
+                        width: 100%;
+                    }
+
+        table#table-checkout tbody td:nth-child(3) {
+            color: #dd052e;
+            font-weight: bold;
+        }
+    </style>
+    <!-- End login -->
+    <!-- support bar area start -->
+    <div class="tb-back-to-top">
+        <i class="fas fa-arrow-up tb-arrow-up"></i>
+    </div>
+    <!-- navbar area start -->
+    <nav class="navbar-area">
+        <div class="support-bar">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-6">
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="support-bar-right">
+                            <div class="account">
+                                @{
+                                    /**/
+
+                                    /**/
+
+                                    var _display = "none";
+                                }
+                                @if (user != null)
+                                {
+                                    _display = "inline-block";
+
+                                }
+                                @{
+                                    var total = 0f;
+                                    foreach (var i in cart)
+                                    {
+                                        total += i.Qty * i.Price;
+                                    }
+
+                                }
+
+                                <div style="position: relative; display: inline-block; text-align: center">
+
+                                    <div class="icon tb-cart" style="display: @_display; cursor: pointer">
+                                        <i class="fas fa-shopping-cart"></i>
+                                        <div id="amount_cart">@cart.Count()</div>
+
+                                    </div>
+                                    @if (user != null)
+                                    {
+                                        <div id="show-cart" class="animated">
+                                            <h4 style="font-size: 18px;text-align: center;" class="status">You have @cart.Count() items in your order</h4>
+                                            <div id="cover-table-show-cart">
+
+                                                <table>
+                                                    @foreach (var it in cart)
+                                                    {
+                                                        <tr>
+                                                            <td class="c-name">@it.services.name</td>
+                                                            <td class="c-price">$@it.Price</td>
+                                                            <td class="c-qty">@it.Qty</td>
+                                                            <td class="c-delete">x</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </div>
+                                            <h4 style="margin-top: 10px;"><small>Total: $</small><span class="tb-js-count">@total</span></h4>
+                                            <style>
+                                                #cover-table-show-cart {
+                                                    width: 100%;
+                                                    max-height: 175px;
+                                                    overflow: auto;
+                                                }
+
+                                                #show-cart table {
+                                                    width: 100%;
+                                                    margin-top: 32px;
+                                                }
+
+                                                    #show-cart table tr {
+                                                        border-top: 1px solid rgba(77,98,108,.5);
+                                                        background: #fbfbfd;
+                                                    }
+
+                                                        #show-cart table tr td {
+                                                            height: 40px;
+                                                            padding-top: 10px;
+                                                            padding-bottom: 8px;
+                                                        }
+
+                                                            #show-cart table tr td:not(:last-child) {
+                                                                text-align: left;
+                                                            }
+
+                                                    #show-cart table .c-name {
+                                                        width: 50%;
+                                                        font-weight: bold;
+                                                        padding-left: 5px;
+                                                    }
+
+                                                    #show-cart table .c-price {
+                                                        width: 30%;
+                                                    }
+
+                                                    #show-cart table .c-qty {
+                                                        width: 10%;
+                                                    }
+
+                                                    #show-cart table .c-delete {
+                                                        width: 10%;
+                                                        font-size: 19px;
+                                                        cursor: pointer;
+                                                        user-select: none;
+                                                    }
+                                            </style>
+                                            <a href="@Url.Action("ViewCheckout", "Home")" class="boxed-btn" style="margin-top: 15px; width: 80%;height: 46px;line-height: 46px;padding: 0px">Check out</a>
+                                        </div>
+
+                                    }
+                                </div>
+
+
+                                <div class="icon icon_round" style="position: relative">
+                                    @if (user != null)
+                                    {
+                                        <i id="icon_user" class="far" value="@user.name"></i>
+
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-user"></i>
+                                    }
+                                </div>
+                                @if (user != null)
+                                {
+                                    <a href="" class="js_clear_default" id="edit_information">@user.name <i class="fas fa-caret-down"></i></a>
+                                    <a href="@Url.Action("SignOut", "Home")" class="ml-10" id="target_sign_out">Sign out</a>
+                                }
+                                else
+                                {
+                                    <a href="#sign_in" id="target_sign_in">Sign in</a>
+                                    <a href="#" id="target_sign_up">Sign up</a>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!--end support bar area -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 col-sm-6 col-xs-6">
+                    <a href="@Url.Action("Index", "Home")" class="logo">
+                        <img src="~/Content/demo/assets/img/logo.png" alt="logo image">
+                    </a>
+                </div>
+                <div class="col-md-10 col-sm-6 col-xs-6">
+                    <div class="responsive-menu"></div>
+                    <ul id="main-menu">
+                        <li class="active">
+                            <a href="@Url.Action("Index", "Home")">Home</a>
+                        </li>
+                        @if (user != null)
+                        {
+                            <li id="li-service">
+                                <a href="@Url.Action("Service", "Home")">Service</a>
+                            </li>
+                            <li id="li-history">
+                                <a href="@Url.Action("History")">History</a>
+                            </li>
+                        }
+                        <li>
+                            <a href="#plan">Service</a>
+                        </li>
+                        <li>
+                            <a href="#faq">Help &amp; FAQs </a>
+                        </li>
+                        <li>
+                            <a href="#contact">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!--end nav bar-->
+
+}
+@RenderSection("Main")
+
+
+@section Footer{
+    <!-- subscription area start -->
+    <section class="subscription-area" id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2 text-center">
+                    <div class="section-title">
+                        <h2>Say Us Something</h2>
+                    </div>
+                    <style>
+                        [name='email'] {
+                            border-radius: 25px;
+                            border: 2px solid rgba(255, 255, 255, 0.2);
+                            background-color: transparent;
+                            color: #fafbfb;
+                            position: relative;
+                        }
+
+                        ::placeholder {
+                            color: red;
+                            opacity: 1;
+                        }
+                    </style>
+                    <form action="" class="tb">
+                        <textarea type="text" style="height: 100px !important; border-radius: 12px; margin-bottom: 10px" name="email" id="something" placeholder="Enter something......"></textarea>
+                    </form>
+                    <div class="subscription-form">
+                        <form action="">
+                            <div class="subs-input-group">
+                                @if (user != null)
+                                {
+                                    <input type="email" name="email" id="email_address" disabled value="@user.email" placeholder="Enter your email address......">
+                                }
+                                else
+                                {
+                                    <input type="email" name="email" disabled placeholder="Enter your email address......">
+                                }
+                                <input type="submit" value="Sumit" id="submit_feedback">
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- subscription area end -->
+    <!-- footer area start start -->
+    <footer class="footer-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3 text-center">
+                    Copyright &copy; Rechargepro
+                    <script>document.write(new Date().getFullYear())</script>. All right reserved.
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer area start end -->
+    <!-- back to top btn start -->
+    <div class="back-to-top">
+        <i class="fas fa-angle-up"></i>
+    </div>
+    <!-- back to top btn end -->
+    <!-- preloader start -->
+    <div class="preloader">
+        <div class="preloader-inner">
+            <div class="mobile">
+                <svg width="67px" height="121px">
+                    <image x="0px" y="0px" width="67px" height="121px" xlink:href="~/Content/demo/assets/img/icon_preload.jpg" />
+                </svg>
+                <div class="coin">
+                    <svg width="50px" height="50px">
+                        <image x="0px" y="0px" width="50px" height="50px" xlink:href="~/Content/demo/assets/img/icon_dolar.jpg" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+@section Script{
+    <script>
+        $(document).ready(function (e) {
+            $("#target_close_modal_edit").click(function (e) {
+                $("#close_modal_edit").click();
+            })
+
+            $("#btn_modal_edit").click(function (e) {
+                Swal.fire({
+                    title: 'Changing your information...!',
+                    onBeforeOpen: () => {
+                        Swal.showLoading()
+                    },
+                    onClose: () => {
+                    }
+                })
+                $.ajax({
+                    url: "@Url.Action("EditInformation", "Home")",
+                    type: "POST",
+                    data: {
+                        name: $('#edit_name').val().trim(),
+                        password: $("#edit_password").val().trim(),
+                    },
+                    success: function (data) {
+                        Swal.hideLoading()
+                        if (data == "1") {
+                            location.reload();
+                        } else {
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                    }
+                })
+            });
+
+            $("#submit_feedback").click(function (e) {
+                e.preventDefault();
+                console.log($("#something").val());
+                if ($("#something").val().trim() == "") {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Say us something!',
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    url: "@Url.Action("Feedback", "Home")",
+                    type: "POST",
+                    data: {
+                        content: $("#something").val().trim()
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "1") {
+                            Swal.fire({
+                                type: 'success',
+                                title: 'Thanks...',
+                                text: 'Thanks you feedback to us!',
+                            });
+                            $("#something").val("");
+                        } else {
+
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            });
+                        }
+
+                    }
+                })
+            })
+
+            setInterval(function (e) {
+                $.ajax({
+                    url: "@Url.Action("checkConnect", "Home")",
+                    type: "POST",
+                    data: {
+
+                    },
+                    success: function (data) {
+                        if ((data == "1" && $("#icon_user").attr("value")) || (data == "-1" && !$("#icon_user").attr("value"))) {
+                            return;
+                        }
+                        location.reload();
+                    },
+                    error: function (data) {
+                        location.reload();
+                    }
+                })
+            }, 2500);
+
+            @if(Session["baseUrl"] == null)
+            {
+                <text>
+                 $.ajax({
+                    url: "@Url.Action("UpdateBaseUrl")",
+                    type: "POST",
+                    data: {
+                        url: window.location.origin
+                    },
+                     success: function (data) {
+                         console.log(data);
+                    }
+                 })
+                </text>
+            }
+
+
+            $("#main-menu li").click(function (e) {
+                window.location.assign($(this).find("a").attr("href"));
+            })
+
+
+            $("#target_sign_up").click(function (e) {
+                e.preventDefault();
+                $("#tb-btn-login").click();
+            })
+            $(".btn_modal_login_close").click(function (e) {
+                $("#modalLogin").modal("hide");
+            })
+            $("#modalLogin ul > li").click(function (e) {
+                $("#modalLogin ul > li").removeClass("active");
+                $(this).addClass("active");
+
+                console.log($(this).index());
+                var index = $(this).index();
+                var next = 1 - index;
+                if (index == 1) {
+                    $("#modalLogin .content .content-item").eq(next).addClass("slideOutLeft").removeClass("slideInLeft").hide(100);
+                    $("#modalLogin .content .content-item").eq(index).addClass("slideInRight").removeClass("slideOutRight").show(100);
+                } else {
+                    $("#modalLogin .content .content-item").eq(index).addClass("slideInLeft").removeClass("slideOutLeft").show();
+                    $("#modalLogin .content .content-item").eq(next).addClass("slideOutRight").removeClass("slideInRight").hide();
+
+                }
+
+            });
+
+            $("#edit_information").click(function (e) {
+                $("#edit_name").val($(this).text().trim());
+                $("#edit_phone").val($("#container_login").find("strong").text().trim());
+                $("#edit_email").val("@(user != null ? user.email : "")");
+                $("#edit_password").val("@(user != null ? user.password : "")");
+
+                $("#tb-btn-edit").click();
+            })
+
+            $(".tb-js-count").each(function (e) {
+                var a = $(this).text();
+                $(this).text("0");
+                JsCount($(this), a);
+            });
+
+            $(window).scroll(function (e) {
+                if ($(this).scrollTop() > 200) {
+                    if ($(".tb-back-to-top").css("display") == "none") {
+                        $(".tb-back-to-top").slideDown();
+                    }
+                } else {
+                    if ($(".tb-back-to-top").css("display") == "block") {
+                        $(".tb-back-to-top").slideUp();
+                    }
+                }
+            })
+
+            $(".tb-cart").click(function (e) {
+                if ($("#show-cart").css("display") == "none") {
+                    $("#show-cart").removeClass("bounceOutUp").show().addClass("bounceInDown");
+                } else {
+                    $("#show-cart").removeClass("bounceInDown").addClass("bounceOutUp").fadeOut()
+                        ;
+
+                }
+            })
+            $(".tb-back-to-top").click(function (e) {
+                $("html, body").animate({
+                    scrollTop: 0
+                }, 250);
+            });
+
+            function icon() {
+            if ($("#icon_user").html() != null) {
+                var name = $("#icon_user").attr("value");
+                var n = name.split(" ");
+
+                var f = n[0].charAt(0).toLocaleUpperCase();
+                if (n.length >= 2) {
+                    f += n[n.length - 1].charAt(0).toLocaleUpperCase();
+                }
+                $("#icon_user").parent().append('<span style="position: absolute; left: 51%; top: 50%;transform: translate(-50%, -50%)">' + f + '</span>');
+
+            }
+            }
+            icon();
+            $(".js_clear_default").click(function (e) {
+                e.preventDefault();
+            })
+
+            $("[href='#sign_in'").click(function (e) {
+                var top = $("#sign_in").position().top;
+                $("html, body").animate({
+                    scrollTop: top
+                }, 300);
+            });
+            $(".ip_required").keyup(function (e) {
+                if ($(this).val() == "" && !$(this).hasClass("empty")) {
+                    $(this).addClass("empty");
+                }
+                if ($(this).val() != "" && $(this).hasClass("empty")) {
+                    $(this).removeClass("empty");
+                }
+            });
+            var check_email = true;
+
+            $("#register_email").blur(function (e) {
+                checkMail();
+            });
+            $("#register_email").keyup(function (e) {
+                checkMail();
+            })
+
+            function checkMail() {
+                var v = $("#register_email").val();
+
+                var target =  $("#register_email").parent().find("img");
+                if (v == "") {
+                    target.attr("src", "/Assets/Image/info.png")
+                    return;
+                }
+                $.ajax({
+                    url: "@Url.Action("CheckEmail","Home")",
+                    type: "POST",
+                    data: {
+                        email: v
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data == "success") {
+                            check_email = true;
+                            target.attr("src", "/Assets/Image/success.png");
+                        }
+                        if (data == "exist" || data == "type") {
+                            check_email = false;
+                            target.attr("src", "/Assets/Image/warning.png");
+                        }
+                    }
+                })
+            }
+            $("#btn_modal_register").click(function (e) {
+                var name = $("#register_name").val();
+                var email = $("#register_email").val();
+                var phone = $("#register_phone").val();
+                var password = $("#register_password").val();
+
+                if (name == "" || email == "" || phone == "" || password == "") {
+                    $("#modalLogin .ip_required").each(function (e) {
+                        if ($(this).val() == "") {
+                            $(this).addClass("empty");
+                        }
+                    })
+
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Type required field'
+                    })
+
+                    return;
+                }
+
+                $.ajax({
+                    url: "http://apilayer.net/api/validate",
+                    type: "GET",
+                    data: {
+                        access_key: "48ea5d2fdb9cd68235148beed47c6002",
+                        format: 1,
+                        country_code: "VN",
+                        number: phone
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.valid) {
+                            $.ajax({
+                                url: "@Url.Action("SignUp", "Home")",
+                                type: "POST",
+                                data: {
+                                    name: name,
+                                    email: email,
+                                    phone: phone,
+                                    password: password,
+                                    id_net_work: data.carrier
+                                },
+                                success: function (data) {
+                                    console.log(data);
+                                    if (data == "success") {
+                                        Swal.fire({
+                                            type: 'success',
+                                            title: 'Ok',
+                                            text: 'Register successful'
+                                        })
+
+                                        $("#login_phone").val(phone);
+                                        $("#login_password").val(password);
+                                        $("#modalLogin .modal-body ul li").eq(0).click();
+                                    } else {
+                                        Swal.fire({
+                                            type: 'error',
+                                            title: 'Oops...',
+                                            text: 'Phone number has used'
+                                        })
+                                    }
+                                }
+                            })
+                        } else {
+                            $("#register_phone").addClass("empty");
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Type phone incorrect'
+                            })
+                            return;
+                        }
+
+                    }
+
+                })
+            });
+            $("#btn_modal_login").click(function (e) {
+                var phone = $("#login_phone").val();
+                var password = $("#login_password").val();
+
+                if (phone == "" || password == "") {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Type phone and password!',
+                    })
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("LoginUser", "Home")',
+                    type: "POST",
+                    data: {
+                        phone: phone,
+                        password: password
+                    },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+
+                        } else {
+                            Swal.fire({
+                                type: 'info',
+                                title: 'Oops...',
+                                text: 'Phone or password is incorrect!'
+                            })
+                        }
+                    }
+                })
+
+
+            })
+
+            $("#btn_login").click(function (e) {
+                var phone = $("#ip_phone").val();
+                var password = $("#ip_password").val();
+
+                if (phone == "" || password == "") {
+                    Swal.fire({
+                        type: 'error',
+                        title: 'Oops...',
+                        text: 'Type phone and password!',
+                    })
+                    return;
+                }
+
+                $.ajax({
+                    url: '@Url.Action("LoginUser", "Home")',
+                    type: "POST",
+                    data: {
+                        phone: phone,
+                        password: password
+                    },
+                    success: function (data) {
+                        if (data) {
+                            location.reload();
+                            return;
+
+                            data = JSON.parse(data);
+                            $("#container_login .header-btn-group").remove();
+                            $("#container_login").append(
+                                '<div class="header-btn-group">'
+                                + '<h3>Hello <strong>' + phone + '</strong></h3>'
+                                + '</div>'
+                            );
+
+                            $(".account .icon_round i").remove();
+                            $(".account .icon_round").append(
+                                '<i id="icon_user" class="far" value="' + data.name + '"></i>'
+                            );
+                            $(".account .tb-cart").slideDown();
+                            icon();
+
+                            $("#target_sign_in").remove();
+                            $(".account").append(
+                                '<a href="" class="js_clear_default">' + data.name + '</a>'
+                                + '<a href="@Url.Action("SignOut", "Home")"  id="target_sign_out" class="ml-10">Sign out</a>'
+                            )
+
+                        } else {
+                            Swal.fire({
+                                type: 'info',
+                                title: 'Oops...',
+                                text: 'Phone or password is incorrect!'
+                            })
+                        }
+                    }
+                })
+
+
+            })
+
+            function Total() {
+                var t = 0;
+
+                $("#show-cart tr").each(function (e) {
+                    t += Number($(this).find(".c-price").text().substring(1)) * Number($(this).find(".c-qty").text())
+                })
+
+                return Number(t.toFixed(1));
+
+            }
+
+            window.deleteRowCart = function (that) {
+                that.addClass("scale_50");
+
+                $.ajax({
+                    url: "@Url.Action("ControlCart", "Home")",
+                    type: "POST",
+                    data: {
+                        type: "delete",
+                        position: that.parent().index(),
+                        cart: null
+                    },
+                    success: function (data) {
+                        if ($("table#table-checkout").html()) {
+                            showCart();
+                        }
+
+                        if (data == "True") {
+                            var t = Number($("#amount_cart").text());
+                            if (t > 0) {
+                                $("#amount_cart").text(t - 1);
+
+                            }
+
+                            that.parent().hide(100);
+                            setTimeout(function (e) {
+                                that.parent().remove();
+                                $("#show-cart h4.status").text("You have " + $("#show-cart tr").length + " items in your order");
+
+                                JsCount($("#show-cart .tb-js-count"), Total());
+                            }, 100)
+                        } else {
+
+                        }
+                    }
+                })
+            }
+
+            $("#show-cart .c-delete").click(function (e) {
+                deleteRowCart($(this));
+
+            })
+            $(".tb-buy-service").click(function (e) {
+            e.preventDefault();
+            var sid = $(this).prev().prev().attr("s-id");
+                var price = $(this).prev().prev().find(".service_price").text();
+            $.ajax({
+                url: "@Url.Action("AddToCart", "Home")",
+                type: "GET",
+                data: {
+                    qty: 1,
+                    price: price,
+                    id_service: sid
+                },
+                success: function (data) {
+                    if (data == 1) {
+                        Swal.fire({
+                            type: 'info',
+                            title: 'Successful...',
+                            text: 'Add to cart successful!',
+                        })
+
+                        showCart();
+                    }
+                    if (data == 0) {
+                        Swal.fire({
+                            type: 'info',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        })
+                    }
+                    if (data == -1) {
+
+                        Swal.fire({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Please login before buy something!',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'Login!'
+                        }).then((result) => {
+                            $("html, body").animate({
+                                scrollTop: $("#sign_in").position().top
+                            }, 200);
+                        });
+
+
+                    }
+                }
+            })
+
+            })
+        })
+
+        window.showCart = function () {
+                $.ajax({
+                    url: "@Url.Action("GetCarts", "Home")",
+                    type: "GET",
+                    data: {
+
+                    },
+                    success: function (data) {
+                        if (data != "") {
+                            data = JSON.parse(data);
+                            data = data["$values"];
+
+                            $("#amount_cart").text(data.length);
+                            $("#show-cart h4.status").text("You have " + data.length + " items in your order");
+                            var t = 0.0;
+
+
+                            $("#show-cart table").empty();
+                            if ($("table#table-checkout").html()) {
+                                $("table#table-checkout tbody").empty();
+
+                                if (data.length == 0) {
+                                    $("table#table-checkout tbody").append(
+                                    `<tr><td colspan="5"><h5 class="text-center" style="margin-bottom: 20px;margin-top: 20px;">Your cart is empty</h5></td></tr>`
+                                    );
+                                }
+                            }
+
+                            for (var i = 0; i < data.length; i++) {
+                                t += data[i].Price * data[i].Qty;
+
+                                var time = Date.now() + i;
+                                $("#show-cart table ").append(
+                                    '<tr><td class="c-name">' + data[i].services.name + '</td>'
+                                    + '<td class="c-price"><span>' + data[i].Price + '</span>$</td>'
+                                    + '<td class="c-qty">' + data[i].Qty + '</td>'
+                                    + '<td class="c-delete" id="_' + time + '">x</td></tr>'
+                                );
+
+                                $("#_" + time).click(function (e) {
+                                    deleteRowCart($(this));
+                                })
+
+
+                                if ($("table#table-checkout").html()) {
+                                console.log("Alert");
+
+                                    $("table#table-checkout tbody").append(
+
+                                        `<tr id="checkout_${time}"><td>${i + 1}</td>`
+                                        + `<td>${data[i].services.name}</td>`
+                                        + `<td class= "text-center" > ${data[i].Price }$</td>`
+                                        + `<td class="text-center"><input type="number" min="1" value="${data[i].Qty}" class="form-control qty-checkout" style="width: 50px; padding: 10px 0 10px 10px; margin: auto" /></td>`
+                                        + `<td class="text-center"><i class="fas fa-times delete_row" style="color: #a91919; cursor: pointer; transition: 0.3s"></i></td></tr>`
+
+                                    )
+                                    $("#checkout_" + time + " input[type='number']").change(function (e) {
+                                        changeAmount($(this));
+                                    })
+                                    $("#checkout_" + time + " input[type='number']").blur(function (e) {
+                                        changeAmount($(this));
+                                    })
+                                    $("#checkout_" + time + " td .delete_row").click(function (e) {
+                                        deleteRowCart($(this).parent());
+                                    })
+                                }
+                            }
+
+                            JsCount($("#show-cart .tb-js-count"), t);
+                            JsCount($("#total"), t);
+                            JsCount($("#subtotal"), t);
+
+                        }
+
+                    }
+                })
+        }
+
+        window.changeAmount = function (target) {
+            var index = target.parent().parent().index();
+            console.log(index, target.val());
+
+            $.ajax({
+                url: "@Url.Action("ControlCart", "Home")",
+                type: "POST",
+                data: {
+                    type: "update",
+                    position: index,
+                    cart: {
+                        Qty: target.val(),
+                        Price: 0,
+                        service: null
+                    }
+                },
+                success: function (data) {
+                    console.log(data);
+                    if (data == "True") {
+                        showCart();
+                    } else {
+
+                        Swal({
+                            type: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong'
+                        })
+                    }
+                }
+            })
+
+        }
+
+        window.formatTime = function () {
+            $(".tb-time").each(function (e) {
+                var d = new Date(Number($(this).text()));
+                var day = d.getDate();
+                var month = d.getMonth();
+                var year = d.getFullYear();
+                var hour = d.getHours();
+                var minutes = d.getMinutes();
+
+                $(this).text(`${tb_format(day)}/${tb_format(month)}/${tb_format(year)} ${tb_format(hour)}:${tb_format(minutes)}`);
+            });
+        }
+        function tb_format(num) {
+            return Number(num) > 9 ? num : `0${num}`;
+        }
+        formatTime();
+
+        window.JsCount = function (target, number_final) {
+            var a = Number(target.text()).toFixed(2);
+            a = Number(a);
+
+            var step = 0.1;
+            console.log("Number: " + number_final );
+            console.log("Number: " + a );
+
+            number_final = Number(Number(number_final).toFixed(2));
+
+            var minus = Math.abs(number_final - a);
+
+
+            if (minus > 10 && minus < 100) step = 5;
+            if (minus > 100 && minus < 1000) step = 20;
+            if (minus > 1000 && minus < 10000) step = 50;
+            if (minus > 10000 && minus < 100000) step = 150;
+
+            if (a == number_final) {
+                target.text(a);
+                return;
+            }
+            var current = a;
+
+            console.log(a);
+            var s = setInterval(function () {
+                if (a > number_final) {
+                    current -= step;
+                } else {
+                    current += step;
+                }
+
+                current = Number(current.toFixed(2));
+                if ((current >= number_final && number_final > a) || (current <= number_final && number_final < a)) {
+                    target.text(number_final);
+                    clearInterval(s);
+                    return;
+                }
+
+                target.text(current)
+            }, 10);
+        };
+    </script>
+    @RenderSection("Script", required: false)
+
+}
+

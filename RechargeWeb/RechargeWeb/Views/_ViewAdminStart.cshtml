@@ -1,0 +1,338 @@
+﻿@using RechargeWeb.Models;
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var employee = Session["admin"] as employee;
+
+    var c = Session["transaction"];
+    if (c == null)
+    {
+        c = 0;
+    }
+}
+@section Outside{
+    <style>
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: rgba(200,235, 235, 0.3);
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #aaa;
+            border-radius: 4px;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+        .modal-title {
+            display: inline-block !important;
+        }
+
+        #bootstrap-data-table.table-striped tbody tr:hover {
+            background-color: rgba(0,0,0,.5);
+            transition: 0.2s;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        .user-area .user-menu .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.09);
+        }
+
+        .fast-animate {
+            animation-duration: 0.34s;
+        }
+
+        .badge-normal {
+            line-height: normal;
+            white-space: normal;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary hidden" id="btn-change-avatar" data-toggle="modal" data-target="#exampleModal">
+        Launch demo modal
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade animated slideInDown" style="animation-duration: 0.34s;" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Change avatar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="user-avatar rounded-circle icon_user" value="@employee.name" style="background: @employee.background;color: @employee.color;margin: auto; margin-top: 16px; text-align: center; height: 40px; width: 40px; line-height: 40px;">TB</div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-group" style="position:relative;">
+                                <label for="targetBackground">Background color</label>
+                                <input type="text" value="@employee.background" style="background-color: @employee.background" target="background-color" class="form-control control-change-avatar" id="targetBackground" placeholder="Background">
+                                <input type="color" value="@employee.background" class="target-control-background" id="background-color" style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                            </div>
+                            <div class="form-group" style="position:relative;">
+                                <label for="targetColor">Color</label>
+                                <input type="text" value="@employee.color" style="background-color: @employee.color" target="color" class="form-control control-change-avatar" id="targetColor" placeholder="Color">
+                                <input type="color" value="@employee.color" class="target-control-background" id="color" style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                            </div>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-change-avatar">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @RenderSection("OutSide", required: false);
+}
+@section AsideWithHeader{
+    <!-- Left Panel -->
+    <aside id="left-panel" class="left-panel">
+        <nav class="navbar navbar-expand-sm navbar-default" style="width: 100%">
+            <div id="main-menu" class="main-menu collapse navbar-collapse" style="width: 100%">
+                <ul class="nav navbar-nav" id="tb-nav">
+                    <li class="active" id="dashboard">
+                        <a href="@Url.Action("Index", "Admin")"><i class="menu-icon fa fa-laptop"></i>Dashboard </a>
+                    </li>
+                    @if (employee.role == 1)
+                    {
+                        <li id="employee">
+                            <a href="@Url.Action("Employee", "Admin")"><i class="menu-icon fa fa-users"></i>Employee</a>
+                        </li>
+                    }
+                    <li id="transaction">
+                        <a href="@Url.Action("Transaction", "Admin")"><i class="menu-icon fa fa-anchor"></i>Transaction</a>
+                    </li>
+                    <li id="customer">
+                        <a href="@Url.Action("Customer", "Admin")"><i class="menu-icon fa fa-user-circle"></i>Customer</a>
+                    </li>
+                    <li id="service">
+                        <a href="@Url.Action("Service", "Admin")"><i class="menu-icon fa fa-th-large"></i>Service</a>
+                    </li>
+                    <li id="network">
+                        <a href="@Url.Action("Network", "Admin")"><i class="menu-icon fa  fa-code-fork"></i>Network</a>
+                    </li>
+                    <li id="feedback">
+                        <a href="@Url.Action("Feedback", "Admin")"><i class="menu-icon fa  fa-comments-o"></i>Feedback</a>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+    </aside>
+    <!-- /#left-panel -->
+    <!-- Right Panel -->
+    <div id="right-panel" class="right-panel">
+        <!-- Header-->
+        <header id="header" class="header">
+            <div class="top-left">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="./"><img src="~/Content/demo/assets/img/logo.png" alt="Logo"></a>
+                    <a class="navbar-brand hidden" href="./"><img src="~/Content/demo/assets/img/logo.png" alt="Logo"></a>
+                    <a id="menuToggle" class="menutoggle"><i class="fa fa-bars"></i></a>
+                </div>
+            </div>
+            <div class="header-menu">
+                <div class="header-left">
+                    <button class="search-trigger"><i class="fa fa-search"></i></button>
+                    <div class="form-inline">
+
+                        <div class="top-right">
+                            <form class="search-form">
+                                <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search">
+                                <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
+                            </form>
+                        </div>
+
+                        <div class="dropdown for-notification">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-bell"></i>
+                                <span class="count bg-danger">3</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="notification">
+                                <p class="red">You have 3 Notification</p>
+                                <a class="dropdown-item media" href="#">
+                                    <i class="fa fa-check"></i>
+                                    <p>Server #1 overloaded.</p>
+                                </a>
+                                <a class="dropdown-item media" href="#">
+                                    <i class="fa fa-info"></i>
+                                    <p>Server #2 overloaded.</p>
+                                </a>
+                                <a class="dropdown-item media" href="#">
+                                    <i class="fa fa-warning"></i>
+                                    <p>Server #3 overloaded.</p>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="user-area dropdown float-right">
+                        <a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="user-avatar rounded-circle icon_user" value="@employee.name" tabindex="@employee.background" style="background: @employee.background;color: @employee.color; text-align: center; height: 40px; width: 40px; line-height: 40px;">TB</span>
+                        </a>
+
+                        <div class="user-menu dropdown-menu">
+                            <a class="nav-link" href="@Url.Action("Profile", "Admin")"><i class="fa fa- user"></i>My Profile</a>
+                            <a class="nav-link" href="#" id="changeAvatar"><i class="fa fa- user"></i>Change Avatar</a>
+                            <a class="nav-link" href="@Url.Action("Transaction", "Admin")"><i class="fa fa- user"></i>Transaction <span class="count">@c</span></a>
+                            <a class="nav-link" href="@Url.Action("Logout", "Admin")"><i class="fa fa-power -off"></i>Logout</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+        <!-- /#header -->
+}
+
+@RenderSection("Main")
+
+
+@section Footer{
+    <div class="clearfix"></div>
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-inner bg-white">
+            <div class="row">
+                <div class="col-sm-6">
+                    Copyright &copy;
+                    <script>document.write(new Date().getFullYear())</script> By <span><img src="~/Content/demo/assets/img/logo.png" style="width: 160px" alt="Alternate Text" /></span>
+                </div>
+                <div class="col-sm-6 text-right">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- /.site-footer -->
+</div>
+<!-- /#right-panel -->
+}
+@section Script{
+    <script>
+        $(document).ready(function (e) {
+            setInterval(function (e) {
+                $.ajax({
+                    url: "@Url.Action("checkLogin", "Admin")",
+                    type: "GET",
+                    data: {
+
+                    },
+                    success: function (data) {
+                        if (data != "True") {
+                            location.reload();
+                        }
+                    },
+                    error: function (data) {
+                            location.reload();
+                    }
+
+                })
+            }, 2000);
+
+            var currentTarget = "";
+
+            $(".clear-event-default").click(function (e) {
+                e.preventDefault();
+            })
+
+            $(".control-change-avatar").click(function (e) {
+                e.preventDefault();
+
+                $("#" + $(this).attr("target")).click();
+                currentTarget = $(this).attr("target");
+            })
+            $(".target-control-background").change(function (e) {
+                $("input[target='" + currentTarget + "']").css("background-color", $(this).val());
+                $(".icon_user").css(currentTarget, $(this).val());
+                $("input[target='" + currentTarget + "']").val($(this).val());
+            })
+
+            $("#changeAvatar").click(function (e) {
+                $("#btn-change-avatar").click();
+            });
+            $("#btn-save-change-avatar").click(function (e) {
+                $.ajax({
+                    url: "@Url.Action("UpdateAvatar", "Admin")",
+                    type: "POST",
+                    data: {
+                        background: $("#targetBackground").val(),
+                        color: $("#targetColor").val()
+                    },
+                    success: function (data) {
+                        if (data == "True") {
+                            Swal.fire(
+                                {
+                                    type: 'success',
+                                    title: 'Successful',
+                                    text: "Your avatar change successful",
+                                }
+                            )
+                        }
+                    }
+                })
+            });
+
+
+            function icon() {
+                $(".icon_user").each(function (e) {
+                    if ($(this).html() != null) {
+                        var name = $(this).attr("value");
+                        var n = name.split(" ");
+
+                        var f = n[0].charAt(0).toLocaleUpperCase();
+                        if (n.length >= 2) {
+                            f += n[n.length - 1].charAt(0).toLocaleUpperCase();
+                        }
+                        console.log(f.charAt(0));
+                        $(this).text(f);
+
+                    }
+                })
+            }
+            icon();
+
+
+
+            window.formatTime = function (target) {
+
+                if (target.text().trim() == "" || target.text() == "null") {
+                        target.text("infinite");
+                        return;
+                }
+
+                    var d = new Date(Number(target.text()));
+                    var day = d.getDate();
+                    var month = d.getMonth() + 1;
+                    var year = d.getFullYear();
+                    var hour = d.getHours();
+                    var minutes = d.getMinutes();
+
+                    target.text(`${tb_format(day)}/${tb_format(month)}/${tb_format(year)} ${tb_format(hour)}:${tb_format(minutes)}`);
+            }
+
+
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false);
+}

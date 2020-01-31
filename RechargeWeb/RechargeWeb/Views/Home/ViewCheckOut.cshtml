@@ -1,0 +1,479 @@
+﻿@using System.Configuration;
+@using RechargeWeb.Models;
+@{
+    Layout = "~/Views/_ViewHomeStart.cshtml";
+
+    var cart = Session["cart"] as List<Cart>;
+
+    if (cart == null)
+    {
+        cart = new List<Cart>();
+    }
+}
+
+@section Main{
+    <style>
+        .section-main .cover-checkout {
+            -webkit-box-shadow: 0.968px 3.881px 17px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 0.968px 3.881px 17px rgba(0, 0, 0, 0.1);
+            box-shadow: 0.968px 3.881px 17px rgba(0, 0, 0, 0.1);
+            padding: 47px 40px 40px 40px;
+        }
+
+        .section-main ul.control-checkout {
+            display: flex;
+            flex-wrap: nowrap;
+            list-style: none;
+            margin: auto;
+            padding: 0;
+            width: 640px;
+        }
+
+            .section-main ul.control-checkout li {
+                width: 100%;
+                text-align: center;
+                user-select: none;
+                cursor: pointer;
+                position: relative;
+                transition: 0.4s;
+            }
+
+                .section-main ul.control-checkout li:before {
+                    content: "";
+                    position: absolute;
+                    top: 23%;
+                    left: 0;
+                    width: 100%;
+                    height: 1px;
+                    background: #484066;
+                    transition: 0.4s;
+                }
+
+                .section-main ul.control-checkout li:first-child:before {
+                    width: 50%;
+                    left: 50%;
+                }
+
+                .section-main ul.control-checkout li:last-child:before {
+                    width: 50%;
+                    left: 0%;
+                }
+
+                .section-main ul.control-checkout li.actived:before {
+                    background: #0048aa;
+                    height: 2.4px;
+                    top: 22%;
+                }
+
+                .section-main ul.control-checkout li.actived {
+                    color: #0048aa;
+                }
+
+                .section-main ul.control-checkout li .text {
+                    width: 36px;
+                    height: 36px;
+                    line-height: 34px;
+                    position: relative;
+                    text-align: center;
+                    border-radius: 50%;
+                    border: 1px solid #484066;
+                    margin: auto;
+                    background: #fcfcfc;
+                }
+
+                .section-main ul.control-checkout li.actived .text {
+                    line-height: 32px;
+                    border: 2px solid #0048aa;
+                }
+
+                .section-main ul.control-checkout li .content {
+                    margin-top: 10px;
+                }
+
+        .section-main .content-checkout {
+            width: 96%;
+            height: 640px;
+            position: relative;
+            margin: auto;
+            margin-top: 54px;
+            overflow: hidden;
+        }
+
+            .section-main .content-checkout .content-checkout-item {
+                width: 94%;
+                margin: auto;
+                -webkit-box-shadow: 0.968px 3.881px 17px rgba(0, 0, 0, 0.1);
+                -moz-box-shadow: 0.968px 3.881px 17px rgba(0, 0, 0, 0.1);
+                box-shadow: 0.968px 3.881px 17px rgba(0, 0, 0, 0.1);
+                position: absolute;
+                top: 0;
+                left: -100%;
+            }
+
+                .section-main .content-checkout .content-checkout-item.actived {
+                    left: 3%;
+                }
+
+                .section-main .content-checkout .content-checkout-item .content-element {
+                    width: 100%;
+                    padding-bottom: 15px;
+                }
+
+            .section-main .content-checkout .cover {
+                width: 90%;
+                margin: auto;
+                padding-bottom: 64px;
+                padding-top: 36px;
+            }
+
+            .section-main .content-checkout #table-checkout {
+                width: 100%;
+                margin: auto;
+                border: 1px solid #dee2e6;
+                clear: both;
+                margin-top: 6px !important;
+                margin-bottom: 6px !important;
+                max-width: none !important;
+                border-collapse: separate !important;
+            }
+
+                .section-main .content-checkout #table-checkout thead tr {
+                    background: transparent !important;
+                }
+
+                .section-main .content-checkout #table-checkout tr:nth-of-type(odd) {
+                    background-color: rgba(0,0,0,.05);
+                }
+
+                .section-main .content-checkout #table-checkout tr td,
+                .section-main .content-checkout #table-checkout tr th {
+                    border: solid #dee2e6;
+                    border-width: 1px 1px 0 0;
+                    padding: 1.85rem;
+                    font-size: 17px;
+                }
+
+                .section-main .content-checkout #table-checkout tr th {
+                    border-bottom: 2px solid #dee2e6;
+                    font-size: 18px;
+                }
+
+        .slideInLeft {
+            animation: slideInLeft 0.4s linear;
+        }
+
+        @@keyframes slideInLeft {
+            from {
+                left: -100%;
+            }
+
+            to {
+                left: 3%;
+            }
+        }
+
+        .slideOutLeft {
+            animation: slideOutLeft 0.4s linear;
+        }
+
+        @@keyframes slideOutLeft {
+            from {
+                left: 3%;
+            }
+
+            to {
+                left: -100%;
+            }
+        }
+
+        .slideInRight {
+            animation: slideInRight 0.4s linear;
+        }
+
+        @@keyframes slideInRight {
+            from {
+                left: 100%;
+            }
+
+            to {
+                left: 3%;
+            }
+        }
+
+        .slideOutRight {
+            animation: slideOutRight 0.4s linear;
+        }
+
+        @@keyframes slideOutRight {
+            from {
+                left: 3%;
+            }
+
+            to {
+                left: 100%;
+            }
+        }
+
+        .delete_row:hover {
+            color: #f90f0f !important;
+        }
+
+        .control-step {
+            overflow: auto;
+            margin-top: 54px;
+        }
+
+            .control-step .next-step {
+                float: right;
+            }
+
+            .control-step .prev-step {
+                float: left;
+            }
+
+            .control-step i {
+                color: green;
+                font-size: 36px;
+                transition: 0.3s;
+                cursor: pointer;
+            }
+
+                .control-step i:hover {
+                    color: #13e813;
+                }
+    </style>
+
+    <section class="section-main" style="padding-top: 56px;  background: #fcfcfc;">
+
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="content-checkout">
+                        <div class="content-checkout-item animated slideInUp actived">
+                            <div class="content-element">
+                                <div class="cover">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <table id="table-checkout" style="user-select: none; margin-top: 16px">
+                                                <thead>
+                                                    <tr>
+                                                        <th>No.</th>
+                                                        <th>Name</th>
+                                                        <th class="text-center">Price</th>
+                                                        <th class="text-center">Qty</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    @{
+                                                        var c = 0;
+                                                        var t = 0f;
+                                                    }
+                                                    @if (cart.Count() == 0)
+                                                    {
+                                                        <tr>
+                                                            <td colspan="5">
+                                                                <h5 class="text-center" style="margin-bottom: 20px;margin-top: 20px;">Your cart is empty</h5>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    else
+                                                    {
+                                                        foreach (var item in cart)
+                                                        {
+                                                            c++;
+                                                            t += item.Qty * item.Price;
+                                                            <tr>
+                                                                <td>@c</td>
+                                                                <td>@item.services.name</td>
+                                                                <td class="text-center"><span>@item.Price</span>$</td>
+                                                                <td class="text-center">
+                                                                    <input type="number" min="1" value="@item.Qty" class="form-control qty-checkout" style="width: 50px; padding: 10px 0 10px 10px; margin: auto" />
+
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <i class="fas fa-times delete_row" style="color: #a91919; cursor: pointer; transition: 0.3s"></i>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">Summary</h4>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <table class="table">
+                                                        <tr>
+                                                            <td><strong>Subtotal:</strong></td>
+                                                            <td>$<span id="subtotal">@t</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="border: none"><strong>Processing fee:</strong></td>
+                                                            <td style="border: none">$0</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2" class="text-right">
+                                                                <p style="text-align: right; margin-top: 16px; color: #666; font-size: 21px">
+                                                                    <strong>Total:</strong> $<span id="total" class="tb-js-count" style="color: #ee2347; font-size: 24px; ">@t</span>
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" id="form-paypal">
+                                                        <input type="hidden" name="cmd" value="_cart">
+                                                        <input type="hidden" name="upload" value="1">
+                                                        <input type="hidden" name="return" basereturn="@ConfigurationManager.AppSettings["urlReturn"]" value="@ConfigurationManager.AppSettings["urlReturn"]">
+                                                        <input type="hidden" name="business" value="binhhvd00682-facilitator@fpt.edu.vn">
+                                                        <div id="cover-paypal"></div>
+                                                        <input id="buttonPaypal" style="width: 80%; margin: auto" class="btn-danger" type="submit" value="Checkout with Paypal">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="content-checkout-item">
+                            <div class="content-element">
+                                <div class="cover">
+                                    <!-- PayPal Logo --><table border="0" cellpadding="10" cellspacing="0" align="center"><tr><td align="center"></td></tr><tr><td align="center"><a href="https://www.paypal.com/vn/webapps/mpp/paypal-popup" title="How PayPal Works" onclick="javascript:window.open('https://www.paypal.com/vn/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;"><img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png" alt="Check out with PayPal" /></a></td></tr></table><!-- PayPal Logo -->
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+@section Script{
+    <script>
+        $(document).ready(function (e) {
+            $(".delete_row").click(function (e) {
+                deleteRowCart($(this).parent());
+            })
+
+            var current = 0;
+
+            function initForm() {
+                console.log("123");
+                $("#cover-paypal").empty();
+                var i = 0;
+                $("#table-checkout tbody tr").each(function (e) {
+                    i++;
+                    console.log("index: " + i);
+                    console.log($(this).find('td:nth-child(2)').text());
+                    var element = `<input type= "hidden" name="item_name_${i}" value="${$(this).find('td:nth-child(2)').text()}" />`;
+                    element += `<input type= "hidden" name="item_number_${i}" value="${$(this).find('td:first-child').text()}" />`;
+                    element += `<input type= "hidden" name="amount_${i}" value="${$(this).find('td:nth-child(3) span').text()}" />`;
+                    element += `<input type= "hidden" name="quantity_${i}" value="${$(this).find('.qty-checkout').val()}" />`;
+                    console.log(element);
+
+                    $("#cover-paypal").append(element);
+                });
+            }
+
+            $("#buttonPaypal").click(function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: "Preparing connecting to paypal",
+                    onBeforeOpen: () => {
+                        swal.showloading()
+
+                    },
+                    onClose: () => {
+                    }
+                })
+                initForm();
+                $.ajax({
+                    url: "@Url.Action("PreparePaypal", "Home")",
+                    type: "POST",
+                    data: {
+
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data != "faild") {
+                            $("#form-paypal input[name='return']").val(`${$("#form-paypal input[name='return']").attr("basereturn")}?order=${btoa(data)}`);
+                            $("#form-paypal").submit();
+                        } else {
+                            Swal.fire({
+                                type: 'error',
+                                title: 'Oops...',
+                                text: 'Something went error, try again!'
+                            })
+                        }
+                    }
+                })
+            })
+            function checkoutSlide(index) {
+                $(".section-main .control-checkout li").removeClass("actived");
+                $(".section-main .control-checkout li").eq(index).addClass("actived");
+
+                $(".content-checkout .content-checkout-item").removeClass("actived");
+
+                $(".content-checkout .content-checkout-item").eq(index).addClass("actived");
+
+                removeAnimateClass($(".content-checkout .content-checkout-item").eq(index));
+                removeAnimateClass($(".content-checkout .content-checkout-item").eq(current));
+                if (index > current) {
+                    $(".content-checkout .content-checkout-item").eq(index).addClass("slideInRight");
+                    $(".content-checkout .content-checkout-item").eq(current).addClass("slideOutLeft");
+                } else {
+                    $(".content-checkout .content-checkout-item").eq(index).addClass("slideInLeft");
+                    $(".content-checkout .content-checkout-item").eq(current).addClass("slideOutRight");
+                }
+
+                current = index;
+            }
+
+            function removeAnimateClass(target) {
+                target.removeClass("slideInLeft")
+                    .removeClass("slideInRight")
+                    .removeClass("slideOutLeft")
+                    .removeClass("slideOutRight");
+            }
+
+            $(".qty-checkout").change(function (e) {
+                changeAmount($(this));
+
+            });
+
+
+            $("#buttonPaypal").click(function (e) {
+                var data = {
+                    cmd: "_cart",
+                        upload: 1,
+                        return: "@ConfigurationManager.AppSettings["urlReturn"]",
+                    business: "@ConfigurationManager.AppSettings["accountBusiness"]",
+                }
+                $.ajax({
+                    url: "@ConfigurationManager.AppSettings["urlSubmitPayment"]",
+                    headers: {
+                        'X-CSRF-TOKEN': '@ConfigurationManager.AppSettings["Token"]',
+                        'Content-Type': 'application/json'
+                    },
+                    type: "POST",
+                    data: {
+                        cmd: "_cart",
+                        upload: 1,
+                        return: "@ConfigurationManager.AppSettings["urlReturn"]",
+                        business: "@ConfigurationManager.AppSettings["accountBusiness"]"
+                    }
+                })
+            });
+        })
+    </script>
+}
+

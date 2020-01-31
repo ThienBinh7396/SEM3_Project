@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "~/Views/Shared/_AdminLoginStart.cshtml";
+}
+
+@RenderSection("Header")
+
+@section Script{
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function (e) {
+            setInterval(function (e) {
+            $.ajax({
+            url: "@Url.Action("checkLogin", "Admin")",
+            type: "GET",
+            data: {
+
+            },
+            success: function (data) {
+            if (data == "True") {
+            location.reload();
+            }
+            },
+            error: function (data) {
+            location.reload();
+            }
+
+            })
+            }, 2000);
+        })
+    </script>
+
+}
+

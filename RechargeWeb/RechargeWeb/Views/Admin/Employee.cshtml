@@ -1,0 +1,95 @@
+﻿@using RechargeWeb.Models;
+@{
+    ViewBag.Title = "Recharge";
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+}
+@section Main{
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Employee</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="@Url.Action("Index", "Admin")">Dashboard</a></li>
+                                <li><a href="#">Table</a></li>
+                                <li class="active">Employee table</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="animated slideInUp">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Employee Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Name</th>
+                                        <th>Phonenumber</th>
+                                        <th>Email</th>
+                                        <th>Created at</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    var index = 0;
+                                }
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td valign="@(index++)">@index</td>
+                                            <td>@item.name</td>
+                                            <td>@item.phone_number</td>
+                                            <td>@item.email</td>
+                                            <td class="tb-time">
+                                                <span class="tb-time badge badge-info badge-normal end_date_text">
+                                                    <script>
+                                                        document.write(formatTextTime("@item.create_at"))
+                                                    </script>
+                                                </span>
+
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+}
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#tb-nav li").removeClass("active");
+            $("#tb-nav li#employee").addClass("active");
+            $('#bootstrap-data-table-export').DataTable();
+        });
+
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿@using RechargeWeb.Models;
+@{
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+    var em = Session["admin"] as employee;
+}
+
+@section Main{
+
+    <div class="content">
+        <div class="animated fadeIn">
+            @if (Model != null)
+            {
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-success" role="alert">
+                            @Model.message
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-lg-8 col-md-12">
+                    <div class="card">
+                        <div class="card-header">Example Form</div>
+                        <div class="card-body card-block">
+                            <form action="@Url.Action("Profile", "Admin")" method="post" class="">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                                        <input type="text" id="username" name="name" placeholder="Username" value="@em.name" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-phone"></i></div>
+                                        <input type="text" id="phone" placeholder="Phone" value="@em.phone_number" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                                        <input type="email" id="email" placeholder="Email" value="@em.email" disabled class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon"><i class="fa fa-lock"></i></div>
+                                        <input type="password" id="password" name="password" value="@em.password" placeholder="Password" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="form-actions form-group"><button type="submit" class="btn btn-success btn-sm">Submit</button></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+}
+
+

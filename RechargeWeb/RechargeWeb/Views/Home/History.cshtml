@@ -1,0 +1,343 @@
+﻿@using RechargeWeb.Models;
+@using RechargeWeb.Controllers;
+@model Tuple<RechargeWeb.Models.ContainerData>
+
+@{
+    ViewBag.Title = "Recharge Pro";
+    Layout = "~/Views/_ViewHomeStart.cshtml";
+
+
+    var container = Model.Item1;
+    var history = container.historyWithDetails;
+    if (history == null)
+    {
+        history = new List<HistoryWithDetails>();
+    }
+    var money = 0f;
+
+    foreach (var el in history.Where(it => it.h.status == 1))
+    {
+        money += float.Parse(el.h.total.ToString());
+    }
+
+}
+
+@section Main{
+    <style>
+        .container table#tb-history tr th:first-child,
+        .container table#tb-history tbody tr td:first-child {
+            width: 56px !important;
+            text-align: center
+        }
+
+        .container table#tb-history tr th,
+        .container table#tb-history tbody tr td {
+            vertical-align: middle;
+        }
+
+        .container table#tb-history > tbody > tr > td:nth-child(2) {
+            position: relative;
+            padding-left: 36px;
+        }
+
+            .container table#tb-history > tbody > tr > td:nth-child(2) .before {
+                top: 50%;
+                left: 12px;
+                height: 14px;
+                width: 14px;
+                display: block;
+                position: absolute;
+                transform: translateY(-50%);
+                color: white;
+                border: 2px solid white;
+                border-radius: 14px;
+                box-shadow: 0 0 3px #444;
+                box-sizing: content-box;
+                text-align: center;
+                text-indent: 0 !important;
+                font-family: 'Courier New', Courier, monospace;
+                line-height: 14px;
+                content: '+';
+                background-color: #31b131;
+                user-select: none;
+            }
+
+        #tb-history_filter input {
+            display: inline-block;
+            width: auto;
+            height: 30px;
+            padding: 6px;
+            color: brown;
+        }
+        /*.container table tbody tr:nth-of-type(2n+1) td {
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .container table#tb-history > tbody > tr:nth-of-type(2n+1) {
+            position: relative;
+        }
+
+            .container table#tb-history > tbody > tr:nth-of-type(2n+1) td {
+                vertical-align: middle;
+            }
+
+                .container table#tb-history > tbody > tr:nth-of-type(2n+1) td:last-child {
+                }
+
+
+            .container table#tb-history > tbody > tr:nth-of-type(2n+1):hover {
+                background: #fafafa;
+            }
+
+            .container table#tb-history > tbody > tr:nth-of-type(2n+1) td:first-child {
+                text-align: center;
+            }*/
+        .tb-hide {
+            display: none;
+        }
+
+        tr.clicked {
+            background: #eae3e38f !important;
+        }
+    </style>
+
+
+
+    <div class="container" style="padding: 54px 0 64px; transition: 0.4s">
+        <div class="row">
+            <div class="col">
+                <div class="section-title">
+                    <h2>History summary</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Summary</h4>
+                    </div>
+                    <div class="panel-body">
+                        <table class="table">
+                            <tr>
+                                <td><strong>Amount:</strong></td>
+                                <td>@history.Count()</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Complete:</strong></td>
+                                <td>@history.Where(it => it.h.status == 1).Count()</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Pending:</strong></td>
+                                <td>@history.Where(it => it.h.status == 0).Count()</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="text-right">
+                                    <p>Amount traded: $<strong>@money</strong></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <table class="table panel panel-info" id="tb-history">
+                    <thead class="panel-heading">
+                        <tr class="row100 ">
+                            <th scope="col" style="width: 140px;">No.</th>
+                            <th scope="col">Trade code</th>
+                            <th scope="col" style="text-align: left; padding-left: 7px;">Total</th>
+                            <th scope="col" style="padding-left: 5px;">Time</th>
+                            <th scope="col" class="text-center" style="padding-right: 10px; width: 136px;">
+                                <select class="form-control" value="all" id="h-status">
+                                    <option value="all" selected>all</option>
+                                    <option value="completed">completed</option>
+                                    <option value="pending">pending</option>
+                                    <option value="reject">reject</option>
+                                </select>
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var i_history = 0;
+                        }
+                        @if (history.Count() == 0)
+                        {
+                            <tr>
+                                <td colspan="5">
+                                    <div class="alert alert-warning" role="alert"> <strong>Warning!</strong> You don't have record. </div>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+
+
+                            foreach (var item in history)
+                            {
+                                <tr style="cursor: pointer" id="_@i_history" index="@i_history" content="@HomeController.ToJson(item.history_Details)">
+                                    <td valign="@(i_history++)">@i_history</td>
+                                    <td onclick="clickTr(this)" click="false"><div class="before">+ </div>@item.h.trade_code</td>
+                                    <td class="" style="text-align: left; color: red; font-weight: bold">
+                                        <span class="count">@item.h.total</span>$
+                                    </td>
+                                    <td class="tb-time">@item.h.create_at</td>
+                                    <td>
+                                        @if (item.h.status == HomeController.status.FirstOrDefault(it => it.Value == "completed").Key)
+                                        {
+                                            <div class="alert alert-success" style="width: 100px; margin: auto; background-color: #00ff3bb8; " role="alert">@HomeController.status[item.h.status]</div>
+                                        }
+                                        else if (item.h.status == HomeController.status.FirstOrDefault(it => it.Value == "pending").Key)
+                                        {
+                                            <div class="alert alert-warning" style="width: 100px; margin: auto; background-color: #fcff35b0; " role="alert">@HomeController.status[item.h.status]</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="alert alert-danger" style="width: 100px; margin: auto;    color: #fdfdfd;background-color: #f75050;" role="alert">@HomeController.status[item.h.status]</div>
+                                        }
+                                    </td>
+                                </tr>
+                                @*<tr class="tb-hide">
+                                        <td></td>
+                                        <td colspan="4">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <table class="table panel panel-success">
+                                                            <thead class="panel-heading">
+                                                                <tr class="">
+                                                                    <th scope="col"> No.</th>
+                                                                    <th scope="col">Name</th>
+                                                                    <th scope="col">Price</th>
+                                                                    <th scope="col">Qty</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @{
+                                                                    var i_detail = 0;
+                                                                }
+                                                                @foreach (var detail in item.history_Details)
+                                                                {
+                                                                    <tr class="">
+                                                                        <td valign="@(i_detail++)">@i_detail</td>
+                                                                        <td>@detail.service.name</td>
+                                                                        <td>
+                                                                            <script>document.write(Number("@detail.price").toFixed(2))</script>
+                                                                        </td>
+                                                                        <td>@detail.qty</td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>*@
+                            }
+                        }
+
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+@section Script{
+    <script>
+        window.contentList = [];
+
+        function getElIndex(el) {
+            for (var i = 0; el = el.previousElementSibling; i++);
+            return i;
+        }
+
+        function clickTr(that) {
+            var index = that.parentElement.getAttribute("index");
+            var target = $(`.container table#tb-history > tbody > tr#_${index} > td:nth-child(2)`);
+
+            if (target.attr("click") == "true") {
+                target.attr("click", "false");
+                $(`.container table#tb-history > tbody > tr#_${index} > td:nth-child(2) .before`).text("+").css({
+                    "background": "#31b131"
+                })
+
+                target.parent().next().remove();
+            } else {
+                target.attr("click", "true");
+                $(`.container table#tb-history > tbody > tr#_${index} > td:nth-child(2) .before`).text("-").css({
+                    "background": "#d33333"
+                });
+
+                var dt = contentList[index];
+                console.log(dt);
+                var body = '<tr class="child animated fadeIn tb-fast"> <td></td><td colspan="4"> <div class="container-fluid"> <div class="row"> <div class="col"> <table class="table panel panel-success"> <thead class="panel-heading"> <tr class=""> <th scope="col"> No.</th> <th scope="col">Name</th> <th scope="col">Price</th> <th scope="col">Qty</th> </tr></thead> <tbody>';
+
+                for (var i = 0; i < dt.length; i++) {
+                    body += `<tr class=""><td>${i + 1}</td><td>${dt[i].service.name}</td>`
+                        + `<td style="color: #f52c2c; font-weight: bold; font-size: 16px;">${dt[i].price.toFixed(2)}$</td>`
+                        + `<td>${dt[i].qty}</td>`
+                        + `</tr>`;
+                }
+                body += '</tbody> </table> </div></div></div></td></tr>'
+
+                console.log(body);
+                $(`.container table#tb-history > tbody > tr#_${index} `).after(body)
+            }
+
+        }
+
+        $(document).ready(function (e) {
+            function reset() {
+                $(".container table#tb-history > tbody > tr > td:nth-child(2) .before").text("+").css({
+                    "background": "#31b131"
+                });
+                $(".container table#tb-history > tbody > tr > td:nth-child(2)").attr("click", "false");
+            }
+
+
+            $("#main-menu li").removeClass("active");
+            $("#main-menu li#li-history").addClass("active");
+
+            $(".container table#tb-history > tbody > tr").each(function (e) {
+                var c = $(this).attr("content");
+                c = JSON.parse(c);
+                contentList.push(c["$values"]);
+            })
+
+            var history = $("#tb-history").DataTable({
+                "columnDefs": [{
+                    targets: 4,
+                    orderable: false
+                }]
+
+            });
+
+            history.on("draw", function (e) {
+                reset();
+            })
+
+            $("#h-status").change(function (e) {
+                console.log($(this).val());
+                history.search($(this).val() == "all" ? "" : $(this).val()).draw();
+            });
+
+            //$(".container table#tb-history > tbody > tr:nth-of-type(2n+1)").click(function (e) {
+            //    console.log($(this).next().css("display"));
+            //    if ($(this).next().css("display") == "none") {
+            //        $(this).next().fadeIn();
+            //        $(this).addClass("clicked");
+            //    } else {
+            //        $(this).next().fadeOut();
+            //        $(this).removeClass("clicked");
+            //    }
+            //})
+
+        })
+    </script>
+}

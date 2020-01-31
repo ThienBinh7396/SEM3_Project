@@ -1,0 +1,363 @@
+﻿@using RechargeWeb.Controllers;
+@{
+    ViewBag.Title = "Transaction";
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+}
+@section OutSide{
+    <style>
+        .btn-change-status {
+            width: 110px;
+        }
+
+            .btn-change-status.btn-danger::after,
+            .btn-change-status.btn-success::after {
+                display: none;
+            }
+
+        .dropdown-item {
+            text-transform: capitalize;
+        }
+
+            .dropdown-item:focus,
+            .dropdown-item:hover {
+                background-color: #bdc8d4;
+            }
+    </style>
+
+
+
+    <button type="button" class="btn btn-primary" id="btn-table-transaction" style="display: none" data-toggle="modal" data-target="#tableTransaction">
+        Launch demo modal
+    </button>
+
+    <div class="modal fade animated slideInDown fast-animate" id="tableTransaction" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Transaction <span id="trade_code" style="font-weight: bold; c">1</span> details:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-stats order-table ov-h">
+                        <table class="table ">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>ID</th>
+                                    <th>Service name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody id="details-of-transaction">
+                                <tr>
+                                    <td class="serial">1.</td>
+                                    <td> #5469 </td>
+                                    <td>  <span class="name">Louis Stanley</span> </td>
+                                    <td> <span class="product">iMax</span> </td>
+                                    <td>
+                                        <span class="badge badge-complete">Complete</span>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <p style="text-align: center">Employee update status: <span class="updates" style="text-transform: capitalize; color: #00c292">Admin</span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+@section Main{
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Transaction</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="@Url.Action("Index", "Admin")">Dashboard</a></li>
+                                <li><a href="#">Table</a></li>
+                                <li class="active">Transaction table</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="animated slideInUp">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Transaction Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Name</th>
+                                        <th>Trade code</th>
+                                        <th>Phone</th>
+                                        <th>Total</th>
+                                        <th>Created</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    var index = 0;
+                                }
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr tid="@item.id" style="cursor: pointer" onclick="clickTr(this)">
+                                            <td valign="@(index++)">@index</td>
+                                            <td>@item.customer.name</td>
+                                            <td class="tradeCode">@item.trade_code</td>
+                                            <td>@item.customer.phone_number</td>
+                                            <td style="color: red; font-weight: bold; font-size: 17px"><span class="total">@item.total</span>$</td>
+                                            <td>
+                                                <span class="tb-time badge badge-info badge-normal">
+                                                    <script>
+                                                        document.write(formatTextTime("@item.create_at"))
+                                                    </script>
+                                                </span>
+                                            </td>
+                                            <td class="tb-status">
+                                                @if (item.status == 0)
+                                                {
+                                                    <div class="btn-group change-status" tid="@item.id">
+                                                        <button type="button" class="btn btn-warning dropdown-toggle btn-change-status" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">pending</button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item" href="#">completed</a>
+                                                            <a class="dropdown-item" href="#">reject</a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    var cl = "btn-success";
+                                                    if (item.status == -1)
+                                                    {
+                                                        cl = "btn-danger";
+                                                    }
+                                                    <div class="btn-group change-status">
+                                                        <button type="button" class="btn @cl dropdown-toggle btn-change-status" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@(HomeController.status[item.status])</button>
+                                                    </div>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th class="searching">User name</th>
+                                        <th class="searching">Trade code</th>
+                                        <th class="searching">User phone</th>
+                                        <th>Total</th>
+                                        <th>Created</th>
+                                        <th class="searching">Status</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+}
+@section Scripts{
+    <script>
+        function getElIndex(el) {
+            for (var i = 0; el = el.previousElementSibling; i++);
+            return i;
+        }
+        function clickTr(that) {
+            var tbIndex = getElIndex(that);
+                $("#details-of-transaction").empty();
+                var seft = $("#bootstrap-data tbody tr").eq(tbIndex);
+                $.ajax({
+                    url: "@Url.Action("GetDetailsTransaction", "Admin")",
+                    type: "GET",
+                    data: {
+                        transaction: seft.attr("tid")
+                    },
+                    success: function (data) {
+                        $("#trade_code").text(seft.find(".tradeCode").text());
+
+                        if (data != "") {
+                            data = JSON.parse(data);
+                            console.log(data);
+                            if (data.h.employee) {
+                                $("#tableTransaction .updates").text(data.h.employee.name);
+                            }
+
+                            data = data["history_Details"]["$values"];
+                            for (var i = 0; i < data.length; i++) {
+                                $("#details-of-transaction").append(
+                                    '<tr>'
+                                    + `<td class="serial">${i + 1}</td>`
+                                    + `<td>  <span class="name">${data[i].id}</span> </td>`
+                                    + `<td>${data[i].service.name}</td>`
+                                    + ` <td> <span class="product">${data[i].price.toFixed(2)}$</span> </td>`
+                                    + `<td>${data[i].qty}</td>`
+                                    + `</tr>`
+                                );
+                            }
+                            $("#details-of-transaction").append(
+                                '<tr>'
+                                + `<td colspan="3"></td>`
+                                + ` <td> <span class="product">Total: </td>`
+                                + `<td><span style="color: red; font-size: 17px">${seft.find(".total").text()}</span> $</td>`
+                                + `</tr>`
+                            );
+
+                        }
+                        $("#btn-table-transaction").click();
+                    }
+                })
+
+
+        }
+
+
+        $(document).ready(function () {
+            $("#tb-nav li").removeClass("active");
+            $("#tb-nav li#transaction").addClass("active");
+
+            var status = [];
+            $("#bootstrap-data tbody tr .btn-change-status").each(function (e) {
+                status.push($(this).text().trim());
+            })
+
+            $(".searching").each(function (e) {
+                console.log($(this).text());
+                if ($(this).text() == "Status") {
+                    $(this).html(
+                        `<div class="form-group">
+                            <select class="form-control" value="all">
+                                <option value="completed">completed</option>
+                                <option value="pending">pending</option>
+                                <option value="reject">reject</option>
+                                <option value="all">all</option>
+                            </select>
+                        </div>`
+                    )
+                } else {
+                    $(this).html("<input type='text' class='form-control' placeholder='Searching " + $(this).text().toLowerCase() + "' />")  ;
+                }
+
+            })
+            var table = $('#bootstrap-data').DataTable();
+            console.log(table)
+            table.columns().every(function () {
+                var that = this;
+
+                $('input', this.footer()).on('keyup change', function () {
+                    console.log(that.search());
+                    if (that.search() != this.value) {
+                        that.search(this.value).draw();
+                    }
+                })
+                $('select', this.footer()).on('change', function () {
+                    console.log(that.search());
+                    if (that.search() != this.value) {
+                        if (this.value == "all") {
+                            that.search(``, true, true).draw();
+                            return;
+                        }
+                        if (this.value == "pending") {
+                            that.search(`${this.value}`, true, true).draw();
+                        } else {
+                            that.search(`^\\s+${this.value}\\s+$`, true, true).draw();
+                        }
+                    }
+                })
+            });
+
+            $(".change-status").click(function (e) {
+                e.stopPropagation();
+                var target = $(this).find(".dropdown-menu");
+                if (target.css("display") == "none") {
+                    $(this).find(".dropdown-menu").slideDown();
+                } else {
+                    $(this).find(".dropdown-menu").slideUp();
+
+                }
+            })
+
+
+
+
+
+            var genHtml = {
+                "completed": '<div class="btn-group change-status"> <button type="button" class="btn btn-success dropdown-toggle btn-change-status" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> completed </button> </div>',
+                "reject": '<div class="btn-group change-status"> <button type="button" class="btn btn-danger dropdown-toggle btn-change-status" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> reject </button> </div>'
+            };
+
+
+            $(".dropdown-menu .dropdown-item").click(function (e) {
+                e.preventDefault();
+                var s = $(this).text();
+                var id = $(this).parent().parent().attr("tid");
+                var seft = $(this);
+                var code = $("#bootstrap-data tr[tid='" + id + "']").find(".tradeCode").text();
+                console.log(code);
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    html: `Change the transaction <span style='color: #ff003b; font-weight: bold;'>${code}</span> status to ${s}`,
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, change it!'
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            url: "@Url.Action("ChangeStatus", "Admin")",
+                            type: "GET",
+                            data: {
+                                id: id,
+                                status: s
+                            },
+                            success: function (data) {
+                                console.log(data);
+                                seft.parent().prev().text(s);
+                                seft.parent().parent().html(genHtml[s]);
+                            }
+                        })
+                    }
+                })
+            });
+        });
+
+    </script>
+}
+

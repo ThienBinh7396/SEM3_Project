@@ -1,0 +1,120 @@
+﻿@using RechargeWeb.Models;
+@{
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+    var employee = Session["Admin"] as employee;
+
+    var tt = Model as List<history>;
+    var ts = tt.Where(it => it.status == 1).ToList();
+    var tp = tt.Where(it => it.status == 0).ToList();
+    var tr = tt.Where(it => it.status == -1).ToList();
+}
+
+@section Main{
+
+    <!-- Orders -->
+    <div class="orders">
+        <div class="row">
+            <div class="col" style="">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="box-title">Wellcome back @employee.name !!!</h4>
+                    </div>
+                </div> <!-- /.card -->
+            </div>  <!-- /.col-lg-8 -->
+        </div>
+
+    </div>
+    <!-- /.orders -->
+    <!--  Traffic  -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="box-title">Transactions </h4>
+                </div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card-body">
+                            <!-- <canvas id="TrafficChart"></canvas>   -->
+                            <canvas id="singelBarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card-body">
+                            <div class="progress-box progress-1">
+                                <h4 class="por-title">Total</h4>
+                                <div class="por-txt">@tt.Count Transaction (100%)</div>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar bg-flat-color-2" role="progressbar" style="width: 40%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="progress-box progress-2">
+                                <h4 class="por-title">Success</h4>
+                                <div class="por-txt">@ts.Count success (@String.Format("{0:#.##}", (ts.Count * 1f / tt.Count * 100))%)</div>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar bg-flat-color-1" role="progressbar" style="width: 24%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="progress-box progress-2">
+                                <h4 class="por-title">Pending</h4>
+                                <div class="por-txt">@tp.Count pending (@String.Format("{0:#.##}", (tp.Count * 1f / tt.Count * 100))%)</div>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar bg-flat-color-3" role="progressbar" style="width: 60%;background: #f3e103" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                            <div class="progress-box progress-2">
+                                <h4 class="por-title">Reject</h4>
+                                <div class="por-txt">@tr.Count reject (@String.Format("{0:#.##}", (tr.Count * 1f / tt.Count * 100))%)</div>
+                                <div class="progress mb-2" style="height: 5px;">
+                                    <div class="progress-bar bg-flat-color-4" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div> <!-- /.card-body -->
+                    </div>
+                </div> <!-- /.row -->
+                <div class="card-body"></div>
+            </div>
+        </div><!-- /# column -->
+    </div>
+    <!--  /Traffic -->
+    <div class="clearfix"></div>
+
+}
+@section Scripts{
+    <script>
+        $(document).ready(function (e) {
+            $("#tb-nav li").removeClass("active");
+            $("#tb-nav li#dashboard").addClass("active");
+
+            var ctx = document.getElementById("singelBarChart");
+            ctx.height = 150;
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ["success", "pending", "reject"],
+                    datasets: [
+                        {
+                            label: "Transaction with amount",
+                            data: [@ts.Count, @tp.Count, @tr.Count],
+                            borderColor: ["rgba(40, 167, 69, 0.8)", "rgba(211, 158, 0, 0.8)", "rgba(220, 53, 69, 0.9)"],
+                            borderWidth: "0",
+                            backgroundColor: ["rgba(40, 167, 69, 0.4)", "rgba(211, 158, 0, 0.4)", "rgba(220, 53, 69, 0.5)"]
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+
+
+        })
+    </script>
+}
+

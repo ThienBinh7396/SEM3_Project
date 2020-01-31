@@ -1,0 +1,105 @@
+﻿@using RechargeWeb.Models;
+@{
+    Layout = "~/Views/_ViewAdminStart.cshtml";
+}
+
+@section Main{
+    <div class="breadcrumbs">
+        <div class="breadcrumbs-inner">
+            <div class="row m-0">
+                <div class="col-sm-4">
+                    <div class="page-header float-left">
+                        <div class="page-title">
+                            <h1>Customer</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="page-header float-right">
+                        <div class="page-title">
+                            <ol class="breadcrumb text-right">
+                                <li><a href="@Url.Action("Index", "Admin")">Dashboard</a></li>
+                                <li><a href="#">Table</a></li>
+                                <li class="active">Statistic customer table</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Statistics Customer Table</strong>
+                        </div>
+                        <div class="card-body">
+                            <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>Name</th>
+                                        <th>Phone</th>
+                                        <th>User email</th>
+                                        <th>Amount</th>
+                                        <th>Success</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                @{
+                                    var index = 0;
+                                }
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr tid="@item.customers.id" style="cursor: pointer">
+                                            <td valign="@(index++)">@index</td>
+                                            <td>@item.customers.name</td>
+                                            <td>@item.customers.phone_number</td>
+                                            <td>@item.customers.email</td>
+                                            <td>
+                                                @item.amount
+                                            </td>
+                                            <td>@item.amount_success</td>
+                                            <td><p style="color: red;font-weight: bold; font-size: 17px; text-align: right">@item.total$</p></td>
+                                        </tr>
+                                    }
+
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th>User name</th>
+                                        <th>User phone</th>
+                                        <th>User email</th>
+                                        <th>Amount</th>
+                                        <th>Amount success</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div><!-- .animated -->
+    </div><!-- .content -->
+
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function (e) {
+            $("#tb-nav li").removeClass("active");
+            $("#tb-nav li#customer").addClass("active");
+
+        })
+    </script>
+}

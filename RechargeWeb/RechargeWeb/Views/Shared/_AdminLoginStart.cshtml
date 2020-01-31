@@ -1,0 +1,48 @@
+﻿@{
+    /**/
+
+    ViewBag.Title = "Recharge";
+}
+
+<!DOCTYPE html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Recharge Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="~/Content/demo/favicon.ico" />
+
+    <link rel="stylesheet" href="~/Content/admin/css/normalize.css">
+    <link rel="stylesheet" href="~/Content/admin/css/bootstrap.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="~/Content/admin/css/themify.css">
+    <link rel="stylesheet" href="~/Content/admin/css/stroke.css">
+    <link rel="stylesheet" href="~/Content/admin/css/flag.css">
+    <link rel="stylesheet" href="~/Content/ElaAdmin-master/assets/css/cs-skin-elastic.css">
+
+    <link rel="stylesheet" href="~/Content/ElaAdmin-master/assets/css/lib/datatable/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="~/Content/ElaAdmin-master/assets/css/style.css">
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
+
+</head>
+<body class="bg-dark">
+
+    @RenderBody()
+
+    <script src="~/Content/admin/js/jquery.js"></script>
+    <script src="~/Content/admin/js/popper.js"></script>
+    <script src="~/Content/admin/js/bootstrap.js"></script>
+    <script src="~/Content/admin/js/matchHeight.js"></script>
+    <script src="~/Content/ElaAdmin-master/assets/js/main.js"></script>
+
+    <script src="~/Content/demo/assets/js/jquery.js"></script>
+    <script src="~/Content/swal2.js"></script>
+
+    @RenderSection("Script", required: false)
+</body>
+</html>
+
+
